@@ -54,9 +54,9 @@ public class Laser : MonoBehaviour
     IEnumerator LaserCoroutine()
     {
         laserBeam.SetActive(false);
-        yield return new WaitForSeconds(0.25f);
+        yield return new WaitForSeconds(0.2f);
         laserBeam.SetActive(true);
-        yield return new WaitForSeconds(0.25f);
+        yield return new WaitForSeconds(0.2f);
         StartCoroutine(LaserCoroutine());
     }
 }
