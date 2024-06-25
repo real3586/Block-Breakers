@@ -147,7 +147,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 2
-  health: 5
+  health: 4
   maxHealth: 0
   spawnScore: 2
   defeatScore: 2

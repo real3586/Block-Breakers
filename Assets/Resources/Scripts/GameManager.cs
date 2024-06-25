@@ -1,7 +1,10 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using Rand = UnityEngine.Random;
 
 public class GameManager : MonoBehaviour
 {
@@ -14,8 +17,13 @@ public class GameManager : MonoBehaviour
     [SerializeField] TextMeshProUGUI scoreText;
 
     int spawnScore = 10, spawnScoreRate = 1;
-
     List<GameObject> enemyPrefabs = new();
+
+    GameObject allEnemies;
+
+    string sceneName;
+    GameObject gameStart;
+    TextMeshProUGUI counter;
 
     private void Awake()
     {
@@ -28,54 +36,107 @@ public class GameManager : MonoBehaviour
         Instance = this;
         DontDestroyOnLoad(Instance);
 
-        AssignMissing();
+        SceneManager.activeSceneChanged += OnSceneChanged;
     }
 
+    void OnSceneChanged(Scene oldScene, Scene newScene)
+    {
+        sceneName = SceneManager.GetActiveScene().name;
+
+        switch (sceneName)
+        {
+            case "Main":
+                AssignMissing();
+                StartCoroutine(GameStart());
+                break;
+        }
+    }
     private void AssignMissing()
     {
         PlayerHealth = 100;
         healthText = GameObject.Find("Health Text").GetComponent<TextMeshProUGUI>();
         scoreText = GameObject.Find("Score Text").GetComponent<TextMeshProUGUI>();
+        allEnemies = GameObject.Find("AllEnemies");
+        gameStart = GameObject.Find("Game Start");
+        counter = GameObject.Find("Counter").GetComponent<TextMeshProUGUI>();
 
         enemyPrefabs.Clear();
-        enemyPrefabs.Add((GameObject)Resources.Load("Prefabs/Enemies/EnemyBasic"));
+        enemyPrefabs.Add((GameObject)Resources.Load("Prefabs/EnemyBasic"));
     }
 
     private void Update()
     {
-        if (PlayerHealth <= 0)
+        if (sceneName == "Main")
         {
-            Debug.Log("you lose lol");
+            if (PlayerHealth <= 0)
+            {
+                Debug.Log("you lose lol");
+            }
+            healthText.text = PlayerHealth.ToString();
+            scoreText.text = Score.ToString();
         }
-        healthText.text = PlayerHealth.ToString();
-        scoreText.text = Score.ToString();
+    }
+
+    IEnumerator GameStart()
+    {
+        Time.timeScale = 0;
+        yield return new WaitForSecondsRealtime(1);
+        counter.text = "2";
+
+        yield return new WaitForSecondsRealtime(1);
+        counter.text = "1";
+
+        yield return new WaitForSecondsRealtime(1);
+        gameStart.SetActive(false);
+        Time.timeScale = 1;
+
+        StartCoroutine(SpawnSequence());
     }
 
     IEnumerator SpawnSequence()
     {
         // check available units with the current spawn score
         List<GameObject> readyEnemies = new();
-        foreach (GameObject enemy in enemyPrefabs)
+        for (int i = 0; i < Enum.GetNames(typeof(Enums.Enemies)).Length; i++)
         {
-            Enemy enemyScript = enemy.GetComponent<Enemy>();
+            Enemy enemyScript = enemyPrefabs[i].GetComponent<Enemy>();
             if (spawnScore >= enemyScript.spawnScore)
             {
-                readyEnemies.Add(enemy);
+                readyEnemies.Add(enemyPrefabs[i]);
             }
         }
 
         // spawn it, take away spawn score equal to the amount it took to spawn
-        GameObject enemyToSpawn = readyEnemies[Random.Range(0, readyEnemies.Count)];
-        spawnScore -= enemyToSpawn.GetComponent<Enemy>().spawnScore;
-
+        if (readyEnemies.Count > 0)
+        {
+            GameObject enemyToSpawn = readyEnemies[Rand.Range(0, readyEnemies.Count)];
+            spawnScore -= enemyToSpawn.GetComponent<Enemy>().spawnScore;
+            SpawnEnemy(enemyToSpawn.GetComponent<Enemy>().Type);
+        }
+        
         yield return new WaitForSeconds(1);
+        
         // gain more spawn score
+        spawnScore += 2;
         StartCoroutine(SpawnSequence());
     }
 
     void SpawnEnemy(Enums.Enemies enemyType)
-    {
+    {        
+        float randX = Rand.Range(-3, 4);
+        float randZ = Rand.Range(8, 10);
 
+        Vector3 spawnPos = new(randX, 0, randZ);
+        
+        // use the unit circle, quadrants 3 and 4, ignores the extreme 30 degrees
+        // in Unity, 0 degrees is North, and rotation follows clockwise (like a compass)
+        float angle = Rand.Range(120, 241);
+
+        GameObject newEnemy = Instantiate(enemyPrefabs[(int)enemyType]);
+        newEnemy.transform.position = spawnPos;
+        newEnemy.transform.parent = allEnemies.transform;
+        newEnemy.GetComponent<Enemy>().Angle = angle;
+        newEnemy.tag = "Enemy";
     }
 
     IEnumerator ScoreIncrementSequence()

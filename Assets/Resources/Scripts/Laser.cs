@@ -6,6 +6,7 @@ public class Laser : MonoBehaviour
 {
     RaycastHit hitInfo = new();
     [SerializeField] float rotationSpeed = 250;
+    [SerializeField] float laserDelay = 0.15f;
 
     private Quaternion initialRotation, continuousRotation;
 
@@ -30,17 +31,27 @@ public class Laser : MonoBehaviour
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         if (Physics.Raycast(ray, out RaycastHit hitInfo))
         {
-            // Get the direction to the hit point
-            Vector3 directionToMouse = hitInfo.point - transform.position;
-            directionToMouse.y = 0;
+            Quaternion combinedRotation;        
+            // if the laser is active, don't move or rotate
+            if (!laserBeam.activeSelf)
+            {
+                // Get the direction to the hit point
+                Vector3 directionToMouse = hitInfo.point - transform.position;
+                directionToMouse.y = 0;
 
-            // Calculate the new rotation to look at the mouse
-            Quaternion lookRotation = Quaternion.LookRotation(directionToMouse);
+                // Calculate the new rotation to look at the mouse
+                Quaternion lookRotation = Quaternion.LookRotation(directionToMouse);
 
-            // Combine the initial rotation, look rotation, and continuous rotation
-            Quaternion combinedRotation;
-            combinedRotation = initialRotation * lookRotation * continuousRotation;
+                // Combine the initial rotation, look rotation, and continuous rotation
+                combinedRotation = initialRotation * lookRotation * continuousRotation;
+            }
+            else
+            {
+                // Combine the look rotation, and continuous rotation
+                Quaternion currentRotation = Quaternion.Euler(0, transform.localEulerAngles.y, 0);
 
+                combinedRotation = initialRotation * currentRotation * continuousRotation;
+            }
             transform.localRotation = combinedRotation;
         }
     }
@@ -48,9 +59,9 @@ public class Laser : MonoBehaviour
     IEnumerator LaserCoroutine()
     {
         laserBeam.SetActive(false);
-        yield return new WaitForSeconds(0.2f);
+        yield return new WaitForSeconds(laserDelay);
         laserBeam.SetActive(true);
-        yield return new WaitForSeconds(0.2f);
+        yield return new WaitForSeconds(laserDelay);
         StartCoroutine(LaserCoroutine());
     }
 }

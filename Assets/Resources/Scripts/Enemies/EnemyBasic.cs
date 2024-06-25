@@ -4,5 +4,8 @@ using UnityEngine;
 
 public class EnemyBasic : Enemy
 {
-
+    private void Awake()
+    {
+        Type = Enums.Enemies.Basic;
+    }
 }

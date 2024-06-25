@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
+    public Enums.Enemies Type { get; protected set; }
+
     public float speed;
     public int health;
     public int maxHealth;
@@ -12,16 +14,11 @@ public class Enemy : MonoBehaviour
     public int spawnScore;
     public int defeatScore;
 
-    float angle;
+    public float Angle { protected get; set; }
 
     private void Awake()
     {
         maxHealth = health;
-        gameObject.tag = "Enemy";
-
-        // use the unit circle, quadrants 3 and 4, ignores the extreme 30 degrees
-        // in Unity, 0 degrees is North, and rotation follows clockwise (like a compass)
-        angle = Random.Range(120, 240);
     }
 
     public virtual void DealDamage(int amount)
@@ -36,12 +33,23 @@ public class Enemy : MonoBehaviour
             Destroy(gameObject);
         }
 
+        float xPos = transform.position.x;
+        float zPos = transform.position.z;
+        if (xPos <= -4 || xPos >= 4)
+        {
+            Destroy(gameObject);
+        }
+        else if (zPos <= -1 || zPos >= 10)
+        {
+            Destroy(gameObject);
+        }
+
         MoveToExit();
     }
 
     protected virtual void MoveToExit()
     {
-        Quaternion routeAngle = Quaternion.Euler(0, angle, 0);
+        Quaternion routeAngle = Quaternion.Euler(0, Angle, 0);
         transform.rotation = Quaternion.RotateTowards(transform.rotation, routeAngle, 9999);
 
         transform.position += speed * Time.deltaTime * transform.forward;
@@ -57,7 +65,7 @@ public class Enemy : MonoBehaviour
     {
         if (other.CompareTag("Bumper"))
         {
-            angle = 360 - angle;
+            Angle = 360 - Angle;
         }
     }
 }
