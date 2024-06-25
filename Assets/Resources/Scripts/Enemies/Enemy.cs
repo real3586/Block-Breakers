@@ -9,6 +9,9 @@ public class Enemy : MonoBehaviour
     public int health;
     public int maxHealth;
 
+    public int spawnScore;
+    public int defeatScore;
+
     float angle;
 
     private void Awake()
@@ -43,7 +46,11 @@ public class Enemy : MonoBehaviour
 
         transform.position += speed * Time.deltaTime * transform.forward;
 
-        
+        if (transform.position.z <= -0.5f)
+        {
+            GameManager.Instance.PlayerHealth -= health;
+            Destroy(gameObject);
+        }
     }
 
     private void OnTriggerEnter(Collider other)

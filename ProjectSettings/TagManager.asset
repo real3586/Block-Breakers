@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Enemy
   - Bumper
+  - Life Zone
   layers:
   - Default
   - TransparentFX

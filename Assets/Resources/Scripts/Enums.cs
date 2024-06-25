@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemyBasic : Enemy
+public class Enums : MonoBehaviour
 {
-
+    public enum Enemies { Basic, }
 }

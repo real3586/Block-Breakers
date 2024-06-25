@@ -39,14 +39,8 @@ public class Laser : MonoBehaviour
 
             // Combine the initial rotation, look rotation, and continuous rotation
             Quaternion combinedRotation;
-            if (hitInfo.point == null)
-            {
-                combinedRotation = initialRotation * continuousRotation;
-            }
-            else
-            {
-                combinedRotation = initialRotation * lookRotation * continuousRotation;
-            }
+            combinedRotation = initialRotation * lookRotation * continuousRotation;
+
             transform.localRotation = combinedRotation;
         }
     }
