@@ -5,13 +5,18 @@ using UnityEngine;
 public class DeathEffect : MonoBehaviour
 {
     ParticleSystem system;
-    public GameObject parent;
+    Renderer render;
+    GameObject parent;
 
     private void OnEnable()
     {
+        parent = transform.parent.gameObject;
         system = GetComponent<ParticleSystem>();
+        render = GetComponent<Renderer>();
+
+        render.material = parent.GetComponent<Renderer>().material;
         var mainSystem = system.main;
-        mainSystem.startColor = parent.GetComponent<Renderer>().material.color;
+        mainSystem.startSize = parent.transform.localScale.x / 4;
 
         StartCoroutine(DeathSequence());
     }

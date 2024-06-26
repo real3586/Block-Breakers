@@ -61,7 +61,10 @@ public class GameManager : MonoBehaviour
         counter = GameObject.Find("Counter").GetComponent<TextMeshProUGUI>();
 
         enemyPrefabs.Clear();
-        enemyPrefabs.Add((GameObject)Resources.Load("Prefabs/EnemyBasic"));
+        for (int i = 0; i < Enum.GetNames(typeof(Enums.Enemies)).Length; i++)
+        {
+            enemyPrefabs.Add((GameObject)Resources.Load("Prefabs/Enemy" + ((Enums.Enemies)i).ToString()));
+        }
     }
 
     private void Update()
@@ -91,6 +94,7 @@ public class GameManager : MonoBehaviour
         Time.timeScale = 1;
 
         StartCoroutine(SpawnSequence());
+        StartCoroutine(ScoreIncrementSequence());
     }
 
     IEnumerator SpawnSequence()
@@ -109,28 +113,29 @@ public class GameManager : MonoBehaviour
         // spawn it, take away spawn score equal to the amount it took to spawn
         if (readyEnemies.Count > 0)
         {
-            GameObject enemyToSpawn = readyEnemies[Rand.Range(0, readyEnemies.Count)];
+            int randomIndex = Rand.Range(0, readyEnemies.Count);
+            GameObject enemyToSpawn = readyEnemies[randomIndex];
             spawnScore -= enemyToSpawn.GetComponent<Enemy>().spawnScore;
-            SpawnEnemy(enemyToSpawn.GetComponent<Enemy>().Type);
+            SpawnEnemy((Enums.Enemies)randomIndex);
         }
-        
+
         yield return new WaitForSeconds(1);
-        
+
         // gain more spawn score
-        spawnScore += 2;
+        spawnScore += spawnScoreRate;
         StartCoroutine(SpawnSequence());
     }
 
     void SpawnEnemy(Enums.Enemies enemyType)
-    {        
-        float randX = Rand.Range(-3, 4);
-        float randZ = Rand.Range(8, 10);
+    {
+        float randX = Rand.Range(-2.0f, 2.0f);
+        float randZ = Rand.Range(8.0f, 9.0f);
 
         Vector3 spawnPos = new(randX, 0, randZ);
-        
+
         // use the unit circle, quadrants 3 and 4, ignores the extreme 30 degrees
         // in Unity, 0 degrees is North, and rotation follows clockwise (like a compass)
-        float angle = Rand.Range(120, 241);
+        float angle = Rand.Range(120.0f, 240.0f);
 
         GameObject newEnemy = Instantiate(enemyPrefabs[(int)enemyType]);
         newEnemy.transform.position = spawnPos;
@@ -143,6 +148,7 @@ public class GameManager : MonoBehaviour
     {
         yield return new WaitForSeconds(5);
         Score += 2;
+        spawnScoreRate++;
         StartCoroutine(ScoreIncrementSequence());
     }
 }

@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using UnityEngine.SocialPlatforms.Impl;
 
 public class Enemy : MonoBehaviour
 {
@@ -74,9 +73,8 @@ public class Enemy : MonoBehaviour
 
     private void Death()
     {
-        deathEffect.GetComponent<DeathEffect>().parent = gameObject;
         deathEffect.gameObject.SetActive(true);
-        deathEffect.transform.parent = null;
+        transform.DetachChildren();
 
         GameManager.Instance.Score += defeatScore;
 

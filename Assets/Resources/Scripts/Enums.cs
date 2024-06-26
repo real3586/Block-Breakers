@@ -4,5 +4,5 @@ using UnityEngine;
 
 public class Enums : MonoBehaviour
 {
-    public enum Enemies { Basic, }
+    public enum Enemies { Basic, Speedy, Slow, }
 }
