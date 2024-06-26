@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SocialPlatforms.Impl;
 
 public class Enemy : MonoBehaviour
 {
@@ -15,6 +16,8 @@ public class Enemy : MonoBehaviour
     public int defeatScore;
 
     public float Angle { protected get; set; }
+
+    [SerializeField] ParticleSystem deathEffect;
 
     private void Awake()
     {
@@ -30,7 +33,7 @@ public class Enemy : MonoBehaviour
     {
         if (health <= 0)
         {
-            Destroy(gameObject);
+            Death();
         }
 
         float xPos = transform.position.x;
@@ -57,7 +60,7 @@ public class Enemy : MonoBehaviour
         if (transform.position.z <= -0.5f)
         {
             GameManager.Instance.PlayerHealth -= health;
-            Destroy(gameObject);
+            Death();
         }
     }
 
@@ -67,5 +70,16 @@ public class Enemy : MonoBehaviour
         {
             Angle = 360 - Angle;
         }
+    }
+
+    private void Death()
+    {
+        deathEffect.GetComponent<DeathEffect>().parent = gameObject;
+        deathEffect.gameObject.SetActive(true);
+        deathEffect.transform.parent = null;
+
+        GameManager.Instance.Score += defeatScore;
+
+        Destroy(gameObject);
     }
 }
