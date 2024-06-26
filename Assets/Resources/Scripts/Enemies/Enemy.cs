@@ -76,7 +76,7 @@ public class Enemy : MonoBehaviour
         deathEffect.gameObject.SetActive(true);
         transform.DetachChildren();
 
-        GameManager.Instance.Score += defeatScore;
+        GameManager.Instance.PlayerScore += defeatScore;
 
         Destroy(gameObject);
     }

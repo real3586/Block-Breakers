@@ -54,6 +54,10 @@ public class Laser : MonoBehaviour
             }
             transform.localRotation = combinedRotation;
         }
+
+        // laser fire rate increases with health lost
+        // 0.15 seconds at 100 hp, 0.05 seconds at 20 (for nice numbers)
+        laserDelay = 0.00125f * GameManager.Instance.PlayerHealth + 0.025f;
     }
 
     IEnumerator LaserCoroutine()

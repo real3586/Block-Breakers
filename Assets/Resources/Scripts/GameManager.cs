@@ -13,7 +13,7 @@ public class GameManager : MonoBehaviour
     public int PlayerHealth { get; set; }
     [SerializeField] TextMeshProUGUI healthText;
 
-    public int Score { get; set; }
+    public int PlayerScore { get; set; }
     [SerializeField] TextMeshProUGUI scoreText;
 
     int spawnScore = 10, spawnScoreRate = 1;
@@ -49,10 +49,16 @@ public class GameManager : MonoBehaviour
                 AssignMissing();
                 StartCoroutine(GameStart());
                 break;
+            case "LoseScreen":
+                StopAllCoroutines();
+                GameObject.Find("Final Score").GetComponent<TextMeshProUGUI>().text = 
+                    "Final Score: " + PlayerScore;
+                break;
         }
     }
     private void AssignMissing()
     {
+        PlayerScore = 0;
         PlayerHealth = 100;
         healthText = GameObject.Find("Health Text").GetComponent<TextMeshProUGUI>();
         scoreText = GameObject.Find("Score Text").GetComponent<TextMeshProUGUI>();
@@ -73,10 +79,10 @@ public class GameManager : MonoBehaviour
         {
             if (PlayerHealth <= 0)
             {
-                Debug.Log("you lose lol");
+                SceneManager.LoadScene("LoseScreen");
             }
             healthText.text = PlayerHealth.ToString();
-            scoreText.text = Score.ToString();
+            scoreText.text = PlayerScore.ToString();
         }
     }
 
@@ -147,7 +153,7 @@ public class GameManager : MonoBehaviour
     IEnumerator ScoreIncrementSequence()
     {
         yield return new WaitForSeconds(5);
-        Score += 2;
+        PlayerScore += 2;
         spawnScoreRate++;
         StartCoroutine(ScoreIncrementSequence());
     }
