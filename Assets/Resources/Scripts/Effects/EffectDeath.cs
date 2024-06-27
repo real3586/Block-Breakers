@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DeathEffect : MonoBehaviour
+public class EffectDeath : MonoBehaviour
 {
     ParticleSystem system;
     Renderer render;

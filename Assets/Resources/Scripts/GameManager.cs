@@ -18,6 +18,8 @@ public class GameManager : MonoBehaviour
 
     int spawnScore = 10, spawnScoreRate = 1;
     List<GameObject> enemyPrefabs = new();
+    List<GameObject> effectPrefabs = new();
+    int[] effectCount = new int[Enum.GetNames(typeof(Enums.EnemyEffects)).Length - 1];
 
     GameObject allEnemies;
 
@@ -69,7 +71,13 @@ public class GameManager : MonoBehaviour
         enemyPrefabs.Clear();
         for (int i = 0; i < Enum.GetNames(typeof(Enums.Enemies)).Length; i++)
         {
-            enemyPrefabs.Add((GameObject)Resources.Load("Prefabs/Enemy" + ((Enums.Enemies)i).ToString()));
+            enemyPrefabs.Add((GameObject)Resources.Load("Prefabs/Enemies/Enemy" + ((Enums.Enemies)i).ToString()));
+        }
+
+        effectPrefabs.Clear();
+        for (int i = 0; i < Enum.GetNames(typeof(Enums.EnemyEffects)).Length; i++)
+        {
+            effectPrefabs.Add((GameObject)Resources.Load("Prefabs/Effects/Effect" + ((Enums.EnemyEffects)i).ToString()));
         }
     }
 
@@ -116,15 +124,77 @@ public class GameManager : MonoBehaviour
             }
         }
 
-        // spawn it, take away spawn score equal to the amount it took to spawn
         if (readyEnemies.Count > 0)
         {
-            int randomIndex = Rand.Range(0, readyEnemies.Count);
-            GameObject enemyToSpawn = readyEnemies[randomIndex];
-            spawnScore -= enemyToSpawn.GetComponent<Enemy>().spawnScore;
-            SpawnEnemy((Enums.Enemies)randomIndex);
-        }
+            // chance for the spawned enemy to have a random effect, only one at a time though
+            // all effects have a 1 in 10 chance of happening except normal
+            Enums.EnemyEffects effectToGive = Enums.EnemyEffects.Normal;
+            bool didChooseEffect = false;
+            for (int i = 0; i < effectCount.Length; i++)
+            {
+                // if 10 enemies have spawned without an effect, the next effect to give is that one
+                if (effectCount[i] >= 10)
+                {
+                    effectToGive = (Enums.EnemyEffects)i;
+                    didChooseEffect = true;
 
+                    // reset the counter
+                    effectCount[i] = 0;
+                    break;
+                }
+            }
+
+            if (didChooseEffect)
+            {
+                // spawn it, take away spawn score equal to the amount it took to spawn
+                int randomIndex = Rand.Range(0, readyEnemies.Count);
+                GameObject enemyToSpawn = readyEnemies[randomIndex];
+                spawnScore -= enemyToSpawn.GetComponent<Enemy>().spawnScore;
+                SpawnEnemy((Enums.Enemies)randomIndex, effectToGive);
+            }
+            else
+            {
+                // randomly decide the effect
+                // 10% separate odds for each one
+                for (int i = 0; i < effectCount.Length; i++)
+                {
+                    int randomInteger = Rand.Range(1, 11);
+                    if (randomInteger == 1)
+                    {
+                        effectToGive = (Enums.EnemyEffects)i;
+                        didChooseEffect = true;
+                        break;
+                    }
+                }
+
+                // give the effect
+                // same code from above
+                if (didChooseEffect)
+                {
+                    int randomIndex = Rand.Range(0, readyEnemies.Count);
+                    GameObject enemyToSpawn = readyEnemies[randomIndex];
+                    spawnScore -= enemyToSpawn.GetComponent<Enemy>().spawnScore;
+                    SpawnEnemy((Enums.Enemies)randomIndex, effectToGive);
+                }
+                else
+                {
+                    // if we haven't chosen an effect, just default to normal
+                    int randomIndex = Rand.Range(0, readyEnemies.Count);
+                    GameObject enemyToSpawn = readyEnemies[randomIndex];
+                    spawnScore -= enemyToSpawn.GetComponent<Enemy>().spawnScore;
+                    SpawnEnemy((Enums.Enemies)randomIndex, Enums.EnemyEffects.Normal);
+                }
+            }
+
+            // increase the effect count of every effect that wasn't given
+            for (int i = 0; i < effectCount.Length; i++)
+            {
+                if (i != (int)effectToGive)
+                {
+                    effectCount[i]++;
+                }
+            }
+        }
         yield return new WaitForSeconds(1);
 
         // gain more spawn score
@@ -132,7 +202,7 @@ public class GameManager : MonoBehaviour
         StartCoroutine(SpawnSequence());
     }
 
-    void SpawnEnemy(Enums.Enemies enemyType)
+    void SpawnEnemy(Enums.Enemies enemyType, Enums.EnemyEffects effect)
     {
         float randX = Rand.Range(-2.0f, 2.0f);
         float randZ = Rand.Range(8.0f, 9.0f);
@@ -148,6 +218,16 @@ public class GameManager : MonoBehaviour
         newEnemy.transform.parent = allEnemies.transform;
         newEnemy.GetComponent<Enemy>().Angle = angle;
         newEnemy.tag = "Enemy";
+
+        // account for the effect
+        if (effect != Enums.EnemyEffects.Normal)
+        {
+            GameObject newEffect = Instantiate(effectPrefabs[(int)effect]);
+            newEffect.transform.parent = newEnemy.transform;
+            newEffect.transform.localPosition = Vector3.up * 2;
+            newEffect.transform.localScale = Vector3.one;
+            newEffect.SetActive(true);
+        }
     }
 
     IEnumerator ScoreIncrementSequence()

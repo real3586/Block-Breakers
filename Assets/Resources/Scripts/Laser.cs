@@ -5,18 +5,25 @@ using UnityEngine;
 
 public class Laser : MonoBehaviour
 {
+    public static Laser Instance { get; private set; }
+
     RaycastHit hitInfo = new();
     [SerializeField] float rotationSpeed = 250;
     [SerializeField] float laserDelay = 0.15f;
     [SerializeField] float laserReloadDelay = 1.5f;
     public int LaserMaxRounds { get; private set; } = 30;
-    public int LaserRounds { get; private set; }
+    public int LaserRounds { get; set; }
     [SerializeField] TextMeshProUGUI reloadingText;
 
     private Quaternion initialRotation, continuousRotation;
 
     [SerializeField] GameObject laserBeam;
     [SerializeField] ParticleSystem sparks;
+
+    private void Awake()
+    {
+        Instance = this;
+    }
 
     void Start()
     {
@@ -61,11 +68,11 @@ public class Laser : MonoBehaviour
             transform.localRotation = combinedRotation;
         }
 
-        // laser fire rate increases with health lost
-        // 0.15 seconds at 100 hp, 0.05 seconds at 20 (for nice numbers)
-        laserDelay = 0.00125f * GameManager.Instance.PlayerHealth + 0.025f;
+        // laser fire rate increases with health lost (linearly)
+        // 0.15 seconds at 100 hp, 0.075 seconds at 20 (for nice numbers)
+        laserDelay = 0.0009375f * GameManager.Instance.PlayerHealth + 0.05625f;
 
-        // so does laser reload
+        // so does laser reload speed
         laserReloadDelay = 0.009375f * GameManager.Instance.PlayerHealth + 0.5625f;
 
         // and rotation speed
