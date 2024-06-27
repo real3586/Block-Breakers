@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class Laser : MonoBehaviour
@@ -7,6 +8,10 @@ public class Laser : MonoBehaviour
     RaycastHit hitInfo = new();
     [SerializeField] float rotationSpeed = 250;
     [SerializeField] float laserDelay = 0.15f;
+    [SerializeField] float laserReloadDelay = 1.5f;
+    public int LaserMaxRounds { get; private set; } = 30;
+    public int LaserRounds { get; private set; }
+    [SerializeField] TextMeshProUGUI reloadingText;
 
     private Quaternion initialRotation, continuousRotation;
 
@@ -19,6 +24,7 @@ public class Laser : MonoBehaviour
         initialRotation = transform.localRotation;
         continuousRotation = Quaternion.identity;
 
+        LaserRounds = 30;
         StartCoroutine(LaserCoroutine());
     }
 
@@ -58,14 +64,34 @@ public class Laser : MonoBehaviour
         // laser fire rate increases with health lost
         // 0.15 seconds at 100 hp, 0.05 seconds at 20 (for nice numbers)
         laserDelay = 0.00125f * GameManager.Instance.PlayerHealth + 0.025f;
+
+        // so does laser reload
+        laserReloadDelay = 0.009375f * GameManager.Instance.PlayerHealth + 0.5625f;
+
+        // and rotation speed
+        rotationSpeed = -3.125f * GameManager.Instance.PlayerHealth + 562.5f;
+
+        // and the spark particle emission, because why not
+        var sparksEmission = sparks.emission;
+        sparksEmission.rateOverTime = -0.125f * GameManager.Instance.PlayerHealth + 17.5f;
     }
 
     IEnumerator LaserCoroutine()
     {
+        laserBeam.SetActive(true);
+        yield return new WaitForSeconds(laserDelay);        
         laserBeam.SetActive(false);
         yield return new WaitForSeconds(laserDelay);
-        laserBeam.SetActive(true);
-        yield return new WaitForSeconds(laserDelay);
+
+        LaserRounds--;
+        if (LaserRounds <= 0)
+        {
+            reloadingText.gameObject.SetActive(true);
+            yield return new WaitForSeconds(laserReloadDelay);
+            
+            LaserRounds = LaserMaxRounds;
+            reloadingText.gameObject.SetActive(false);
+        }
         StartCoroutine(LaserCoroutine());
     }
 }
