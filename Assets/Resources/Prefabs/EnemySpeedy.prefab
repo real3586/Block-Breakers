@@ -151,7 +151,7 @@ MonoBehaviour:
   health: 2
   maxHealth: 0
   spawnScore: 2
-  defeatScore: 2
+  defeatScore: 1
   deathEffect: {fileID: 3284912603152532918}
 --- !u!1 &7911050253759419611
 GameObject:

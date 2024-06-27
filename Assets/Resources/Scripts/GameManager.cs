@@ -152,7 +152,7 @@ public class GameManager : MonoBehaviour
 
     IEnumerator ScoreIncrementSequence()
     {
-        yield return new WaitForSeconds(5);
+        yield return new WaitForSeconds(6);
         PlayerScore += 2;
         spawnScoreRate++;
         StartCoroutine(ScoreIncrementSequence());
