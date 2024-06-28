@@ -5,11 +5,11 @@ using UnityEngine;
 public class Effect : MonoBehaviour
 {
     [SerializeField] protected new Light light;
-    [SerializeField] protected float delay;
+    protected const float delay = 1.5f;
 
-    float startTime;
+    protected float startTime;
 
-    private void OnEnable()
+    protected virtual void OnEnable()
     {
         startTime = Time.time;
 
@@ -33,7 +33,6 @@ public class Effect : MonoBehaviour
 
         if (transform.position.z <= -0.5f)
         {
-            Debug.Log("I died to the exit");
             Destroy(gameObject);
             yield break;
         }

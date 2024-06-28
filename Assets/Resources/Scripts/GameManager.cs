@@ -16,7 +16,7 @@ public class GameManager : MonoBehaviour
     public int PlayerScore { get; set; }
     [SerializeField] TextMeshProUGUI scoreText;
 
-    int spawnScore = 10, spawnScoreRate = 1;
+    int spawnScore, spawnScoreRate;
     List<GameObject> enemyPrefabs = new();
     List<GameObject> effectPrefabs = new();
     int[] effectCount = new int[Enum.GetNames(typeof(Enums.EnemyEffects)).Length - 1];
@@ -41,7 +41,7 @@ public class GameManager : MonoBehaviour
         SceneManager.activeSceneChanged += OnSceneChanged;
     }
 
-    void OnSceneChanged(Scene oldScene, Scene newScene)
+    private void OnSceneChanged(Scene oldScene, Scene newScene)
     {
         sceneName = SceneManager.GetActiveScene().name;
 
@@ -62,6 +62,8 @@ public class GameManager : MonoBehaviour
     {
         PlayerScore = 0;
         PlayerHealth = 100;
+        spawnScore = 10;
+        spawnScoreRate = 1;
         healthText = GameObject.Find("Health Text").GetComponent<TextMeshProUGUI>();
         scoreText = GameObject.Find("Score Text").GetComponent<TextMeshProUGUI>();
         allEnemies = GameObject.Find("AllEnemies");
@@ -75,7 +77,7 @@ public class GameManager : MonoBehaviour
         }
 
         effectPrefabs.Clear();
-        for (int i = 0; i < Enum.GetNames(typeof(Enums.EnemyEffects)).Length; i++)
+        for (int i = 0; i < effectCount.Length; i++)
         {
             effectPrefabs.Add((GameObject)Resources.Load("Prefabs/Effects/Effect" + ((Enums.EnemyEffects)i).ToString()));
         }
@@ -169,19 +171,15 @@ public class GameManager : MonoBehaviour
 
                 // give the effect
                 // same code from above
+                int randomIndex = Rand.Range(0, readyEnemies.Count);
+                GameObject enemyToSpawn = readyEnemies[randomIndex];
+                spawnScore -= enemyToSpawn.GetComponent<Enemy>().spawnScore;
                 if (didChooseEffect)
                 {
-                    int randomIndex = Rand.Range(0, readyEnemies.Count);
-                    GameObject enemyToSpawn = readyEnemies[randomIndex];
-                    spawnScore -= enemyToSpawn.GetComponent<Enemy>().spawnScore;
                     SpawnEnemy((Enums.Enemies)randomIndex, effectToGive);
                 }
                 else
                 {
-                    // if we haven't chosen an effect, just default to normal
-                    int randomIndex = Rand.Range(0, readyEnemies.Count);
-                    GameObject enemyToSpawn = readyEnemies[randomIndex];
-                    spawnScore -= enemyToSpawn.GetComponent<Enemy>().spawnScore;
                     SpawnEnemy((Enums.Enemies)randomIndex, Enums.EnemyEffects.Normal);
                 }
             }
@@ -223,10 +221,20 @@ public class GameManager : MonoBehaviour
         if (effect != Enums.EnemyEffects.Normal)
         {
             GameObject newEffect = Instantiate(effectPrefabs[(int)effect]);
+
             newEffect.transform.parent = newEnemy.transform;
             newEffect.transform.localPosition = Vector3.up * 2;
             newEffect.transform.localScale = Vector3.one;
             newEffect.SetActive(true);
+            if (effect == Enums.EnemyEffects.Explosion)
+            {
+                // destroys the death effect
+                Destroy(newEnemy.transform.Find("DeathEffects").gameObject);
+
+                // explosion is the new death effect
+                newEnemy.GetComponent<Enemy>().deathEffect = newEffect;
+                newEffect.GetComponent<EffectExplosion>().explosionDamage = newEnemy.GetComponent<Enemy>().maxHealth;
+            }
         }
     }
 

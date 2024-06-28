@@ -16,7 +16,7 @@ public class Enemy : MonoBehaviour
 
     public float Angle { protected get; set; }
 
-    [SerializeField] ParticleSystem deathEffect;
+    public GameObject deathEffect;
 
     private void Awake()
     {
@@ -71,9 +71,9 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    private void Death()
+    protected void Death()
     {
-        deathEffect.gameObject.SetActive(true);
+        deathEffect.SetActive(true);
         transform.DetachChildren();
 
         GameManager.Instance.PlayerScore += defeatScore;
