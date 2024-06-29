@@ -20,6 +20,8 @@ public class Laser : MonoBehaviour
     [SerializeField] GameObject laserBeam;
     [SerializeField] ParticleSystem sparks;
 
+    const int sparksBaseEmission = 5;
+
     private void Awake()
     {
         Instance = this;
@@ -44,7 +46,7 @@ public class Laser : MonoBehaviour
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         if (Physics.Raycast(ray, out RaycastHit hitInfo))
         {
-            Quaternion combinedRotation;        
+            Quaternion combinedRotation;
             // if the laser is active, don't move or rotate
             if (!laserBeam.activeSelf)
             {
@@ -76,17 +78,17 @@ public class Laser : MonoBehaviour
         laserReloadDelay = 0.009375f * GameManager.Instance.PlayerHealth + 0.5625f;
 
         // and rotation speed
-        rotationSpeed = -3.125f * GameManager.Instance.PlayerHealth + 562.5f;
+        rotationSpeed = (-3.125f * GameManager.Instance.PlayerHealth + 562.5f) * GameManager.Instance.detailMultiplier;
 
         // and the spark particle emission, because why not
         var sparksEmission = sparks.emission;
-        sparksEmission.rateOverTime = -0.125f * GameManager.Instance.PlayerHealth + 17.5f;
+        sparksEmission.rateOverTime = (-0.125f * GameManager.Instance.PlayerHealth + 17.5f) * GameManager.Instance.detailMultiplier;
     }
 
     IEnumerator LaserCoroutine()
     {
         laserBeam.SetActive(true);
-        yield return new WaitForSeconds(laserDelay);        
+        yield return new WaitForSeconds(laserDelay);
         laserBeam.SetActive(false);
         yield return new WaitForSeconds(laserDelay);
 
@@ -94,8 +96,16 @@ public class Laser : MonoBehaviour
         if (LaserRounds <= 0)
         {
             reloadingText.gameObject.SetActive(true);
-            yield return new WaitForSeconds(laserReloadDelay);
-            
+            float startTime = Time.time;
+            while (Time.time - startTime < laserReloadDelay)
+            {
+                if (LaserRounds > 0)
+                {
+                    break;
+                }
+                yield return new WaitForEndOfFrame();
+            }
+
             LaserRounds = LaserMaxRounds;
             reloadingText.gameObject.SetActive(false);
         }

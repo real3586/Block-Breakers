@@ -54,7 +54,7 @@ public class Enemy : MonoBehaviour
         Quaternion routeAngle = Quaternion.Euler(0, Angle, 0);
         transform.rotation = Quaternion.RotateTowards(transform.rotation, routeAngle, 9999);
 
-        transform.position += speed * Time.deltaTime * transform.forward;
+        transform.position += speed * GameManager.Instance.enemySpeedMult * Time.deltaTime * transform.forward;
 
         if (transform.position.z <= -0.5f)
         {

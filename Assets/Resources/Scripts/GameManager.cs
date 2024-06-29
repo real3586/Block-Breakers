@@ -4,12 +4,14 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 using Rand = UnityEngine.Random;
 
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; set; }
 
+    #region All Variables
     public int PlayerHealth { get; set; }
     [SerializeField] TextMeshProUGUI healthText;
 
@@ -19,6 +21,7 @@ public class GameManager : MonoBehaviour
     int spawnScore, spawnScoreRate;
     List<GameObject> enemyPrefabs = new();
     List<GameObject> effectPrefabs = new();
+    GameObject colorAssistPrefab;
     int[] effectCount = new int[Enum.GetNames(typeof(Enums.EnemyEffects)).Length - 1];
 
     GameObject allEnemies;
@@ -26,6 +29,18 @@ public class GameManager : MonoBehaviour
     string sceneName;
     GameObject gameStart;
     TextMeshProUGUI counter;
+
+    public float enemySpeedMult = 1;
+    public float detailMultiplier = 1;
+    #endregion
+
+    #region Settings Variables
+    public bool colorAssistEnabled;
+    TextMeshProUGUI colorAssistText;
+
+    public bool lowDetailEnabled;
+    TextMeshProUGUI lowDetailText;
+    #endregion
 
     private void Awake()
     {
@@ -48,7 +63,7 @@ public class GameManager : MonoBehaviour
         switch (sceneName)
         {
             case "Main":
-                AssignMissing();
+                AssignMissingMain();
                 StartCoroutine(GameStart());
                 break;
             case "LoseScreen":
@@ -56,14 +71,18 @@ public class GameManager : MonoBehaviour
                 GameObject.Find("Final Score").GetComponent<TextMeshProUGUI>().text = 
                     "Final Score: " + PlayerScore;
                 break;
+            case "Settings":
+                AssignMissingSettings();
+                break;
         }
     }
-    private void AssignMissing()
+    private void AssignMissingMain()
     {
         PlayerScore = 0;
         PlayerHealth = 100;
         spawnScore = 10;
         spawnScoreRate = 1;
+        enemySpeedMult = 1;
         healthText = GameObject.Find("Health Text").GetComponent<TextMeshProUGUI>();
         scoreText = GameObject.Find("Score Text").GetComponent<TextMeshProUGUI>();
         allEnemies = GameObject.Find("AllEnemies");
@@ -81,6 +100,15 @@ public class GameManager : MonoBehaviour
         {
             effectPrefabs.Add((GameObject)Resources.Load("Prefabs/Effects/Effect" + ((Enums.EnemyEffects)i).ToString()));
         }
+
+        colorAssistPrefab = (GameObject)Resources.Load("Prefabs/Effects/ColorAssistText");
+    }
+
+    private void AssignMissingSettings()
+    {
+        colorAssistText = GameObject.Find("Color Assist Text").GetComponent<TextMeshProUGUI>();
+
+        lowDetailText = GameObject.Find("Low Detail Text").GetComponent<TextMeshProUGUI>();
     }
 
     private void Update()
@@ -93,6 +121,13 @@ public class GameManager : MonoBehaviour
             }
             healthText.text = PlayerHealth.ToString();
             scoreText.text = PlayerScore.ToString();
+
+            detailMultiplier = lowDetailEnabled ? 0.5f : 1;
+        }
+        else if (sceneName == "Settings")
+        {
+            colorAssistText.text = EnabledOrDisabled(colorAssistEnabled);
+            lowDetailText.text = EnabledOrDisabled(lowDetailEnabled);
         }
     }
 
@@ -221,11 +256,11 @@ public class GameManager : MonoBehaviour
         if (effect != Enums.EnemyEffects.Normal)
         {
             GameObject newEffect = Instantiate(effectPrefabs[(int)effect]);
-
             newEffect.transform.parent = newEnemy.transform;
             newEffect.transform.localPosition = Vector3.up * 2;
             newEffect.transform.localScale = Vector3.one;
             newEffect.SetActive(true);
+
             if (effect == Enums.EnemyEffects.Explosion)
             {
                 // destroys the death effect
@@ -234,6 +269,13 @@ public class GameManager : MonoBehaviour
                 // explosion is the new death effect
                 newEnemy.GetComponent<Enemy>().deathEffect = newEffect;
                 newEffect.GetComponent<EffectExplosion>().explosionDamage = newEnemy.GetComponent<Enemy>().maxHealth;
+            }
+
+            if (colorAssistEnabled)
+            {
+                GameObject newText = Instantiate(colorAssistPrefab, newEffect.transform, false);
+                newText.GetComponent<TextMeshPro>().text = EffectTypeToString(effect);
+                newText.GetComponent<ColorAssist>().parent = newEnemy;
             }
         }
     }
@@ -244,5 +286,29 @@ public class GameManager : MonoBehaviour
         PlayerScore += 2;
         spawnScoreRate++;
         StartCoroutine(ScoreIncrementSequence());
+    }
+
+    string EnabledOrDisabled(bool x)
+    {
+        if (x)
+        {
+            return "ENABLED";
+        }
+        else
+        {
+            return "DISABLED";
+        }
+    }
+
+    string EffectTypeToString(Enums.EnemyEffects effect)
+    {
+        return effect switch
+        {
+            Enums.EnemyEffects.Power => "P",
+            Enums.EnemyEffects.Reload => "r",
+            Enums.EnemyEffects.Explosion => "e",
+            Enums.EnemyEffects.Freeze => "f",
+            _ => null,
+        };
     }
 }

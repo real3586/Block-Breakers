@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class EffectPower : Effect
 {
-    protected override IEnumerator ReturnToLaser()
+    protected override IEnumerator DeathEffect()
     {
-        yield return StartCoroutine(base.ReturnToLaser());
+        yield return StartCoroutine(base.DeathEffect());
 
         Beam.Instance.LaserDamage++;
         Destroy(gameObject);

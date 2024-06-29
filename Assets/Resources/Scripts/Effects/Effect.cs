@@ -1,9 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class Effect : MonoBehaviour
 {
+    public Enums.EnemyEffects Type { get; protected set; }
+
     [SerializeField] protected new Light light;
     protected const float delay = 1.5f;
 
@@ -14,7 +17,7 @@ public class Effect : MonoBehaviour
         startTime = Time.time;
 
         StartCoroutine(FlashSequence());
-        StartCoroutine(ReturnToLaser());
+        StartCoroutine(DeathEffect());
     }
 
     protected virtual IEnumerator FlashSequence()
@@ -26,7 +29,7 @@ public class Effect : MonoBehaviour
         StartCoroutine(FlashSequence());
     }
 
-    protected virtual IEnumerator ReturnToLaser()
+    protected virtual IEnumerator DeathEffect()
     {
         // wait until the enemy that this is attached to dies
         yield return new WaitUntil(() => transform.parent == null);

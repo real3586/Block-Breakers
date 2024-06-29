@@ -8,6 +8,8 @@ public class EffectDeath : MonoBehaviour
     Renderer render;
     GameObject parent;
 
+    protected const int defaultEmission = 200;
+
     private void OnEnable()
     {
         parent = transform.parent.gameObject;
@@ -17,6 +19,8 @@ public class EffectDeath : MonoBehaviour
         render.material = parent.GetComponent<Renderer>().material;
         var mainSystem = system.main;
         mainSystem.startSize = parent.transform.localScale.x / 4;
+        var emission = system.emission;
+        emission.rateOverTime = defaultEmission * GameManager.Instance.detailMultiplier;
 
         StartCoroutine(DeathSequence());
     }

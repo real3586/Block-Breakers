@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class EffectReload : Effect
 {
-    protected override IEnumerator ReturnToLaser()
+    protected override IEnumerator DeathEffect()
     {
-        yield return StartCoroutine(base.ReturnToLaser());
+        yield return StartCoroutine(base.DeathEffect());
 
         Laser.Instance.LaserRounds = 30;
         Destroy(gameObject);

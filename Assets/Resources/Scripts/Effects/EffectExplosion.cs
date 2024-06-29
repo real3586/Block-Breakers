@@ -11,11 +11,16 @@ public class EffectExplosion : Effect
     [SerializeField] Renderer explosionRender;
     [SerializeField] Material explosionColor;
 
+    const int defaultEmission = 250;
+
     protected override void OnEnable()
     {
         var mainExplosion = explosion.main;
         explosionRender.material = explosionColor;
         mainExplosion.startSize = transform.parent.localScale.x / 4;
+
+        var emission = explosion.emission;
+        emission.rateOverTime = defaultEmission * GameManager.Instance.detailMultiplier;
 
         StartCoroutine(FlashSequence());
         StartCoroutine(ExplosionSequence());
