@@ -232,9 +232,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 1
-  health: 550
+  health: 500
   maxHealth: 0
-  spawnScore: 80
+  spawnScore: 90
   defeatScore: 125
   deathEffect: {fileID: 8387853488168306099}
   afterSpeed: 1.25
