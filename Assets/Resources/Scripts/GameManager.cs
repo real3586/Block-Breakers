@@ -75,6 +75,9 @@ public class GameManager : MonoBehaviour
             case "Settings":
                 AssignMissingSettings();
                 break;
+            case "Menu":
+                StopAllCoroutines();
+                break;
         }
     }
     private void AssignMissingMain()
