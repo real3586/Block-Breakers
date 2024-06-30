@@ -2,14 +2,27 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemyTank : Enemy
+public class EnemyElite : Enemy
 {
-    [SerializeField] GameObject shield;
     [SerializeField] float afterSpeed;
+    [SerializeField] GameObject shield;
+    [SerializeField] int damageReduction;
 
     private void OnEnable()
     {
-        Type = Enums.Enemies.Tank;
+        Type = Enums.Enemies.Elite;
+    }
+
+    public override void DealDamage(int amount)
+    {
+        if (amount - damageReduction > 0)
+        {
+            base.DealDamage(amount - damageReduction);
+        }
+        else
+        {
+            return;
+        }
     }
 
     protected override void Update()

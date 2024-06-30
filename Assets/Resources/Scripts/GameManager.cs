@@ -29,6 +29,7 @@ public class GameManager : MonoBehaviour
     string sceneName;
     GameObject gameStart;
     TextMeshProUGUI counter;
+    GameObject pauseStuff, pauseButton;
 
     public float enemySpeedMult = 1;
     public float detailMultiplier = 1;
@@ -64,7 +65,7 @@ public class GameManager : MonoBehaviour
         {
             case "Main":
                 AssignMissingMain();
-                StartCoroutine(GameStart());
+                StartCoroutine(CountdownSequence(true));
                 break;
             case "LoseScreen":
                 StopAllCoroutines();
@@ -88,6 +89,9 @@ public class GameManager : MonoBehaviour
         allEnemies = GameObject.Find("AllEnemies");
         gameStart = GameObject.Find("Game Start");
         counter = GameObject.Find("Counter").GetComponent<TextMeshProUGUI>();
+        pauseStuff = GameObject.Find("Pause Stuff");
+        pauseStuff.SetActive(false);
+        pauseButton = GameObject.Find("PauseButton");
 
         enemyPrefabs.Clear();
         for (int i = 0; i < Enum.GetNames(typeof(Enums.Enemies)).Length; i++)
@@ -131,9 +135,11 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    IEnumerator GameStart()
+    IEnumerator CountdownSequence(bool isGameStart)
     {
+        pauseButton.SetActive(false);
         Time.timeScale = 0;
+        counter.text = "3";
         yield return new WaitForSecondsRealtime(1);
         counter.text = "2";
 
@@ -143,9 +149,13 @@ public class GameManager : MonoBehaviour
         yield return new WaitForSecondsRealtime(1);
         gameStart.SetActive(false);
         Time.timeScale = 1;
+        pauseButton.SetActive(true);
 
-        StartCoroutine(SpawnSequence());
-        StartCoroutine(ScoreIncrementSequence());
+        if (isGameStart)
+        {
+            StartCoroutine(SpawnSequence());
+            StartCoroutine(ScoreIncrementSequence());
+        }
     }
 
     IEnumerator SpawnSequence()
@@ -310,5 +320,20 @@ public class GameManager : MonoBehaviour
             Enums.EnemyEffects.Freeze => "f",
             _ => null,
         };
+    }
+
+    public void PauseGame()
+    {
+        Time.timeScale = 0;
+        pauseStuff.SetActive(true);
+        pauseButton.SetActive(false);
+    }
+
+    public void ResumeGame()
+    {
+        pauseStuff.SetActive(false);
+        counter.text = "3";
+        gameStart.SetActive(true);
+        StartCoroutine(CountdownSequence(false));
     }
 }
