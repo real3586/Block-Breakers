@@ -33,6 +33,8 @@ public class GameManager : MonoBehaviour
 
     public float enemySpeedMult = 1;
     public float detailMultiplier = 1;
+
+    public int evolvedEnemyCount = 0;
     #endregion
 
     #region Settings Variables
@@ -87,6 +89,7 @@ public class GameManager : MonoBehaviour
         spawnScore = 10;
         spawnScoreRate = 1;
         enemySpeedMult = 1;
+        evolvedEnemyCount = 0;
         healthText = GameObject.Find("Health Text").GetComponent<TextMeshProUGUI>();
         scoreText = GameObject.Find("Score Text").GetComponent<TextMeshProUGUI>();
         allEnemies = GameObject.Find("AllEnemies");
@@ -255,9 +258,10 @@ public class GameManager : MonoBehaviour
 
         Vector3 spawnPos = new(randX, 0, randZ);
 
-        // use the unit circle, quadrants 3 and 4, ignores the extreme 30 degrees
-        // in Unity, 0 degrees is North, and rotation follows clockwise (like a compass)
-        float angle = Rand.Range(120.0f, 240.0f);
+        // assign the direction angle for the enemies to take
+        // in Unity the degrees are a compass, 0 degrees is North, and rotation follows clockwise
+        // for the variable ignore the outer 20 degrees and the center 60 degrees
+        float angle = Rand.Range(1, 3) == 1 ? Rand.Range(110.0f, 150.0f) : Rand.Range(210.0f, 250.0f);
 
         GameObject newEnemy = Instantiate(enemyPrefabs[(int)enemyType]);
         newEnemy.transform.position = spawnPos;
