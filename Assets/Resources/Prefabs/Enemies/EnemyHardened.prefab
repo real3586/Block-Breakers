@@ -150,8 +150,9 @@ MonoBehaviour:
   speed: 1.1
   health: 300
   maxHealth: 0
-  spawnScore: 60
+  spawnScore: 55
   defeatScore: 90
+  firstSpawnTime: 25
   deathEffect: {fileID: 7748083322312312207}
   damageReduction: 5
 --- !u!1001 &4812104796442161358

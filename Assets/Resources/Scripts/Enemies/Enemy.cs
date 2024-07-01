@@ -6,6 +6,7 @@ using UnityEngine;
 public class Enemy : MonoBehaviour
 {
     public Enums.Enemies Type { get; protected set; }
+    public Enums.Era PreferedEra { get; protected set; }
 
     public float speed;
     public int health;
@@ -13,6 +14,7 @@ public class Enemy : MonoBehaviour
 
     public int spawnScore;
     public int defeatScore;
+    public float firstSpawnTime;
 
     public float Angle { protected get; set; }
 
@@ -54,7 +56,8 @@ public class Enemy : MonoBehaviour
         Quaternion routeAngle = Quaternion.Euler(0, Angle, 0);
         transform.rotation = Quaternion.RotateTowards(transform.rotation, routeAngle, 9999);
 
-        transform.position += speed * GameManager.Instance.enemySpeedMult * Time.deltaTime * transform.forward;
+        transform.position += speed * GameManager.Instance.enemySpeedMult 
+            * GameManager.Instance.generalSpeedMultiplier * Time.deltaTime * transform.forward;
 
         if (transform.position.z <= -0.5f)
         {

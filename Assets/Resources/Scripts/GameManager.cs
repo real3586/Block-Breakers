@@ -33,8 +33,12 @@ public class GameManager : MonoBehaviour
 
     public float enemySpeedMult = 1;
     public float detailMultiplier = 1;
+    public float generalSpeedMultiplier = 1;
 
     public int evolvedEnemyCount = 0;
+
+    float gameStartTime;
+    Enums.Era currentEra;
     #endregion
 
     #region Settings Variables
@@ -90,6 +94,7 @@ public class GameManager : MonoBehaviour
         spawnScoreRate = 1;
         enemySpeedMult = 1;
         evolvedEnemyCount = 0;
+        generalSpeedMultiplier = 1;
         healthText = GameObject.Find("Health Text").GetComponent<TextMeshProUGUI>();
         scoreText = GameObject.Find("Score Text").GetComponent<TextMeshProUGUI>();
         allEnemies = GameObject.Find("AllEnemies");
@@ -112,6 +117,7 @@ public class GameManager : MonoBehaviour
         }
 
         colorAssistPrefab = (GameObject)Resources.Load("Prefabs/Effects/ColorAssistText");
+        gameStartTime = Time.time;
     }
 
     private void AssignMissingSettings()
@@ -138,6 +144,16 @@ public class GameManager : MonoBehaviour
         {
             colorAssistText.text = EnabledOrDisabled(colorAssistEnabled);
             lowDetailText.text = EnabledOrDisabled(lowDetailEnabled);
+        }
+
+        currentEra = SetCurrentEra(Time.time - gameStartTime);
+        if (GameObject.Find("EnemyGeneral (Clone)"))
+        {
+            generalSpeedMultiplier = 1.1f;
+        }
+        else
+        {
+            generalSpeedMultiplier = 1;
         }
     }
 
@@ -177,7 +193,23 @@ public class GameManager : MonoBehaviour
             }
         }
 
-        if (readyEnemies.Count > 0)
+        // check the spawn time and remove enemies that cannot be spawned yet
+        List<GameObject> readyEnemiesFiltered = new();
+        foreach (GameObject enemy in readyEnemies)
+        {
+            Enemy enemyScript = enemy.GetComponent<Enemy>();
+            if (enemyScript.firstSpawnTime <= Time.time - gameStartTime)
+            {
+                // if it is that enemy's era, add it twice
+                if (enemyScript.PreferedEra == currentEra)
+                {
+                    readyEnemiesFiltered.Add(enemy);
+                }
+                readyEnemiesFiltered.Add(enemy);
+            }
+        }
+
+        if (readyEnemiesFiltered.Count > 0)
         {
             // chance for the spawned enemy to have a random effect, only one at a time though
             // all effects have a 1 in 10 chance of happening except normal
@@ -200,8 +232,8 @@ public class GameManager : MonoBehaviour
             if (didChooseEffect)
             {
                 // spawn it, take away spawn score equal to the amount it took to spawn
-                int randomIndex = Rand.Range(0, readyEnemies.Count);
-                GameObject enemyToSpawn = readyEnemies[randomIndex];
+                int randomIndex = Rand.Range(0, readyEnemiesFiltered.Count);
+                GameObject enemyToSpawn = readyEnemiesFiltered[randomIndex];
                 spawnScore -= enemyToSpawn.GetComponent<Enemy>().spawnScore;
                 SpawnEnemy((Enums.Enemies)randomIndex, effectToGive);
             }
@@ -222,8 +254,8 @@ public class GameManager : MonoBehaviour
 
                 // give the effect
                 // same code from above
-                int randomIndex = Rand.Range(0, readyEnemies.Count);
-                GameObject enemyToSpawn = readyEnemies[randomIndex];
+                int randomIndex = Rand.Range(0, readyEnemiesFiltered.Count);
+                GameObject enemyToSpawn = readyEnemiesFiltered[randomIndex];
                 spawnScore -= enemyToSpawn.GetComponent<Enemy>().spawnScore;
                 if (didChooseEffect)
                 {
@@ -327,6 +359,28 @@ public class GameManager : MonoBehaviour
             Enums.EnemyEffects.Freeze => "f",
             _ => null,
         };
+    }
+
+    Enums.Era SetCurrentEra(float currentGameTime)
+    {
+        // note: the end of early game is 10 seconds, not the start
+        // which is why the early enum holds a value of 10
+        if (currentGameTime <= (int)Enums.Era.Early)
+        {
+            return Enums.Era.Early;
+        }
+        else if (currentGameTime <= (int)Enums.Era.Mid)
+        {
+            return Enums.Era.Mid;
+        }
+        else if (currentGameTime <= (int)Enums.Era.Late)
+        {
+            return Enums.Era.Late;
+        }
+        else
+        {
+            return Enums.Era.End;
+        }
     }
 
     public void PauseGame()

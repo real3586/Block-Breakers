@@ -20,8 +20,6 @@ public class Laser : MonoBehaviour
     [SerializeField] GameObject laserBeam;
     [SerializeField] ParticleSystem sparks;
 
-    const int sparksBaseEmission = 5;
-
     private void Awake()
     {
         Instance = this;

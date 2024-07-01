@@ -234,8 +234,9 @@ MonoBehaviour:
   speed: 1
   health: 550
   maxHealth: 0
-  spawnScore: 90
+  spawnScore: 80
   defeatScore: 125
+  firstSpawnTime: 28
   deathEffect: {fileID: 8387853488168306099}
   afterSpeed: 1.2
   shield: {fileID: 1197865817839382085}

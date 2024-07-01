@@ -7,5 +7,6 @@ public class EnemyBoss : Enemy
     private void Awake()
     {
         Type = Enums.Enemies.Boss;
+        PreferedEra = Enums.Era.Early;
     }
 }

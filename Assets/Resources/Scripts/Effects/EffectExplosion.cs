@@ -55,11 +55,11 @@ public class EffectExplosion : Effect
             }
         }
 
-        // all enemies that explode take damage equal to the exploded enemy's max health
+        // all enemies that explode take damage equal to the exploded enemy's max health times 2
         // explosion damage is handled by game manager
         for (int i = 0; i < enemiesToExplode.Count; i++)
         {
-            enemiesToExplode[i].GetComponent<Enemy>().DealDamage(explosionDamage);
+            enemiesToExplode[i].GetComponent<Enemy>().DealDamage(explosionDamage * 2);
         }
 
         yield return new WaitForSeconds(0.4f);

@@ -304,6 +304,7 @@ MonoBehaviour:
   scoreText: {fileID: 0}
   enemySpeedMult: 1
   detailMultiplier: 1
+  generalSpeedMultiplier: 1
   evolvedEnemyCount: 0
   colorAssistEnabled: 0
   lowDetailEnabled: 0

@@ -7,5 +7,6 @@ public class EnemyBasic : Enemy
     private void OnEnable()
     {
         Type = Enums.Enemies.Basic;
+        PreferedEra = Enums.Era.Early;
     }
 }

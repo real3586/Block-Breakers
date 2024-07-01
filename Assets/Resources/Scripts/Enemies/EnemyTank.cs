@@ -10,6 +10,7 @@ public class EnemyTank : Enemy
     private void OnEnable()
     {
         Type = Enums.Enemies.Tank;
+        PreferedEra = Enums.Era.Mid;
     }
 
     protected override void Update()

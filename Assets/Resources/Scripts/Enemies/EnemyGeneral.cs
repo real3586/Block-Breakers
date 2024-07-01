@@ -2,11 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemyTurbo : Enemy
+public class EnemyGeneral : Enemy
 {
     private void OnEnable()
     {
-        Type = Enums.Enemies.Turbo;
-        PreferedEra = Enums.Era.Mid;
+        Type = Enums.Enemies.General;
+        PreferedEra = Enums.Era.End;
     }
 }

@@ -11,6 +11,7 @@ public class EnemyEvolved : Enemy
     {
         // when it gets spawned in, change the stats to reflect the number of evolveds that have been spawned
         Type = Enums.Enemies.Evolved;
+        PreferedEra = Enums.Era.End;
         float evolvedCount = GameManager.Instance.evolvedEnemyCount > 20 ? 20 : GameManager.Instance.evolvedEnemyCount;
         evolvedMultiplier = evolvedCount / 10 + 1;
 

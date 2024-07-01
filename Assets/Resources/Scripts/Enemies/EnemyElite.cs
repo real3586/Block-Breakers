@@ -11,6 +11,7 @@ public class EnemyElite : Enemy
     private void OnEnable()
     {
         Type = Enums.Enemies.Elite;
+        PreferedEra = Enums.Era.Late;
     }
 
     public override void DealDamage(int amount)
