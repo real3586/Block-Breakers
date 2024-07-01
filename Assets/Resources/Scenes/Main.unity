@@ -302,7 +302,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   healthText: {fileID: 0}
   scoreText: {fileID: 0}
-  enemySpeedMult: 1
+  allEnemies: {fileID: 0}
+  freezeMultiplier: 1
   detailMultiplier: 1
   generalSpeedMultiplier: 1
   evolvedEnemyCount: 0

@@ -152,7 +152,7 @@ MonoBehaviour:
   maxHealth: 0
   spawnScore: 30
   defeatScore: 25
-  firstSpawnTime: 12
+  firstSpawnTime: 15
   deathEffect: {fileID: 8121810151508920308}
 --- !u!1001 &6483151734045110965
 PrefabInstance:

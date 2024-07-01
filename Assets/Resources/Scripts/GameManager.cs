@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.UI;
 using Rand = UnityEngine.Random;
 
 public class GameManager : MonoBehaviour
@@ -24,14 +23,14 @@ public class GameManager : MonoBehaviour
     GameObject colorAssistPrefab;
     int[] effectCount = new int[Enum.GetNames(typeof(Enums.EnemyEffects)).Length - 1];
 
-    GameObject allEnemies;
+    public GameObject allEnemies;
 
     string sceneName;
     GameObject gameStart;
     TextMeshProUGUI counter;
     GameObject pauseStuff, pauseButton;
 
-    public float enemySpeedMult = 1;
+    public float chillMultiplier = 1;
     public float detailMultiplier = 1;
     public float generalSpeedMultiplier = 1;
 
@@ -92,7 +91,7 @@ public class GameManager : MonoBehaviour
         PlayerHealth = 100;
         spawnScore = 10;
         spawnScoreRate = 1;
-        enemySpeedMult = 1;
+        chillMultiplier = 1;
         evolvedEnemyCount = 0;
         generalSpeedMultiplier = 1;
         healthText = GameObject.Find("Health Text").GetComponent<TextMeshProUGUI>();
@@ -147,9 +146,9 @@ public class GameManager : MonoBehaviour
         }
 
         currentEra = SetCurrentEra(Time.time - gameStartTime);
-        if (GameObject.Find("EnemyGeneral (Clone)"))
+        if (GameObject.Find("EnemyGeneral(Clone)"))
         {
-            generalSpeedMultiplier = 1.1f;
+            generalSpeedMultiplier = 1.15f;
         }
         else
         {
@@ -204,6 +203,11 @@ public class GameManager : MonoBehaviour
                 if (enemyScript.PreferedEra == currentEra)
                 {
                     readyEnemiesFiltered.Add(enemy);
+                    // if the era is end, add it again
+                    if (currentEra == Enums.Era.End)
+                    {
+                        readyEnemiesFiltered.Add(enemy);
+                    }
                 }
                 readyEnemiesFiltered.Add(enemy);
             }
@@ -334,6 +338,10 @@ public class GameManager : MonoBehaviour
         yield return new WaitForSeconds(6);
         PlayerScore += 2;
         spawnScoreRate++;
+        if (currentEra == Enums.Era.Late || currentEra == Enums.Era.End)
+        {
+            spawnScoreRate++;
+        }
         StartCoroutine(ScoreIncrementSequence());
     }
 
@@ -356,7 +364,8 @@ public class GameManager : MonoBehaviour
             Enums.EnemyEffects.Power => "P",
             Enums.EnemyEffects.Reload => "r",
             Enums.EnemyEffects.Explosion => "e",
-            Enums.EnemyEffects.Freeze => "f",
+            Enums.EnemyEffects.Chill => "c",
+            Enums.EnemyEffects.FireRate => "f",
             _ => null,
         };
     }

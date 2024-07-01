@@ -56,7 +56,7 @@ public class Enemy : MonoBehaviour
         Quaternion routeAngle = Quaternion.Euler(0, Angle, 0);
         transform.rotation = Quaternion.RotateTowards(transform.rotation, routeAngle, 9999);
 
-        transform.position += speed * GameManager.Instance.enemySpeedMult 
+        transform.position += speed * GameManager.Instance.chillMultiplier 
             * GameManager.Instance.generalSpeedMultiplier * Time.deltaTime * transform.forward;
 
         if (transform.position.z <= -0.5f)
@@ -74,7 +74,7 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    protected void Death()
+    protected virtual void Death()
     {
         deathEffect.SetActive(true);
         transform.DetachChildren();

@@ -8,6 +8,8 @@ public class Laser : MonoBehaviour
     public static Laser Instance { get; private set; }
 
     RaycastHit hitInfo = new();
+
+    const float baseRotation = 250, baseDelay = 0.15f, baseReload = 1.5f;
     [SerializeField] float rotationSpeed = 250;
     [SerializeField] float laserDelay = 0.15f;
     [SerializeField] float laserReloadDelay = 1.5f;
@@ -23,6 +25,10 @@ public class Laser : MonoBehaviour
     private void Awake()
     {
         Instance = this;
+
+        rotationSpeed = baseRotation;
+        laserDelay = baseDelay;
+        laserReloadDelay = baseReload;
     }
 
     void Start()
@@ -68,11 +74,7 @@ public class Laser : MonoBehaviour
             transform.localRotation = combinedRotation;
         }
 
-        // laser fire rate increases with health lost (linearly)
-        // 0.15 seconds at 100 hp, 0.075 seconds at 20 (for nice numbers)
-        laserDelay = 0.0009375f * GameManager.Instance.PlayerHealth + 0.05625f;
-
-        // so does laser reload speed
+        // laser reload speed increases with health lost (linearly)
         laserReloadDelay = 0.009375f * GameManager.Instance.PlayerHealth + 0.5625f;
 
         // and rotation speed
@@ -108,5 +110,10 @@ public class Laser : MonoBehaviour
             reloadingText.gameObject.SetActive(false);
         }
         StartCoroutine(LaserCoroutine());
+    }
+
+    public void EffectFireRate()
+    {
+        laserDelay *= 0.95f;
     }
 }

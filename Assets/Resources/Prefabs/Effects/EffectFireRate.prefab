@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &562096550788267517
+--- !u!1 &1103929993930879626
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,43 +8,43 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 2916124434931046132}
-  - component: {fileID: 6837085007672557903}
-  - component: {fileID: 4104379461915071815}
+  - component: {fileID: 6777169711134527019}
+  - component: {fileID: 3535787171458862459}
+  - component: {fileID: 7751322233495484012}
   m_Layer: 0
-  m_Name: EffectFreeze
+  m_Name: EffectFireRate
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 0
---- !u!4 &2916124434931046132
+--- !u!4 &6777169711134527019
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 562096550788267517}
+  m_GameObject: {fileID: 1103929993930879626}
   m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 2, y: 2, z: 2}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
---- !u!108 &6837085007672557903
+--- !u!108 &3535787171458862459
 Light:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 562096550788267517}
+  m_GameObject: {fileID: 1103929993930879626}
   m_Enabled: 1
   serializedVersion: 10
   m_Type: 0
   m_Shape: 0
-  m_Color: {r: 0, g: 0.44313717, b: 1, a: 1}
+  m_Color: {r: 1, g: 0, b: 0, a: 1}
   m_Intensity: 4
   m_Range: 1.5
   m_SpotAngle: 54
@@ -95,17 +95,16 @@ Light:
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
   m_ShadowAngle: 0
---- !u!114 &4104379461915071815
+--- !u!114 &7751322233495484012
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 562096550788267517}
+  m_GameObject: {fileID: 1103929993930879626}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9bf477238c44b284080f892eaa50a54b, type: 3}
+  m_Script: {fileID: 11500000, guid: bedfa57d651dd3a4ca0a0ccb7d335e48, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  light: {fileID: 6837085007672557903}
-  colorAssistText: {fileID: 0}
+  light: {fileID: 3535787171458862459}
