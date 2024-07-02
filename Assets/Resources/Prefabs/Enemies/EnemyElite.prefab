@@ -231,14 +231,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 232f307a40d009945bd4bd85fff8c762, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 1
-  health: 600
+  type: 8
+  preferedEra: 150
+  firstSpawnTime: 120
+  speed: 0.8
+  health: 550
   maxHealth: 0
-  spawnScore: 80
-  defeatScore: 125
-  firstSpawnTime: 60
+  spawnScore: 90
+  defeatScore: 135
   deathEffect: {fileID: 8387853488168306099}
-  afterSpeed: 1.2
+  afterSpeed: 1
   shield: {fileID: 1197865817839382085}
   damageReduction: 4
 --- !u!1 &8387853488168306099

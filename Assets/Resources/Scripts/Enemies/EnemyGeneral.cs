@@ -6,8 +6,8 @@ public class EnemyGeneral : Enemy
 {
     private void OnEnable()
     {
-        Type = Enums.Enemies.General;
-        PreferedEra = Enums.Era.End;
+        type = Enums.Enemies.General;
+        preferedEra = Enums.Era.End;
     }
 
     protected override void MoveToExit()

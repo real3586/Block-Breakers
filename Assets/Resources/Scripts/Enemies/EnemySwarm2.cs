@@ -6,7 +6,7 @@ public class EnemySwarm2 : Enemy
 {
     private void OnEnable()
     {
-        Type = Enums.Enemies.Swarm;
-        PreferedEra = Enums.Era.Mid;
+        type = Enums.Enemies.Swarm;
+        preferedEra = Enums.Era.Mid;
     }
 }

@@ -9,8 +9,8 @@ public class EnemySwarm1 : Enemy
 
     private void OnEnable()
     {
-        Type = Enums.Enemies.Swarm;
-        PreferedEra = Enums.Era.Mid;
+        type = Enums.Enemies.Swarm;
+        preferedEra = Enums.Era.Mid;
     }
 
     protected override void Death()

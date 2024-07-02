@@ -6,7 +6,7 @@ public class EnemyTurbo : Enemy
 {
     private void OnEnable()
     {
-        Type = Enums.Enemies.Turbo;
-        PreferedEra = Enums.Era.Mid;
+        type = Enums.Enemies.Turbo;
+        preferedEra = Enums.Era.Mid;
     }
 }

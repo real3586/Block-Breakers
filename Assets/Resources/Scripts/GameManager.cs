@@ -18,7 +18,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] TextMeshProUGUI scoreText;
 
     int playerScoreRate, spawnScore, spawnScoreRate;
-    List<GameObject> enemyPrefabs = new();
+    public List<GameObject> enemyPrefabs = new();
     List<GameObject> effectPrefabs = new();
     GameObject colorAssistPrefab;
     int[] effectCount = new int[Enum.GetNames(typeof(Enums.EnemyEffects)).Length - 1];
@@ -60,6 +60,7 @@ public class GameManager : MonoBehaviour
         DontDestroyOnLoad(Instance);
 
         SceneManager.activeSceneChanged += OnSceneChanged;
+        LoadPrefabs();
     }
 
     private void OnSceneChanged(Scene oldScene, Scene newScene)
@@ -83,8 +84,11 @@ public class GameManager : MonoBehaviour
             case "Menu":
                 StopAllCoroutines();
                 break;
+            default:
+                break;
         }
     }
+
     private void AssignMissingMain()
     {
         PlayerScore = 0;
@@ -104,6 +108,12 @@ public class GameManager : MonoBehaviour
         pauseStuff.SetActive(false);
         pauseButton = GameObject.Find("PauseButton");
 
+        LoadPrefabs();
+        gameStartTime = Time.time;
+    }
+
+    private void LoadPrefabs()
+    {
         enemyPrefabs.Clear();
         for (int i = 0; i < Enum.GetNames(typeof(Enums.Enemies)).Length; i++)
         {
@@ -117,7 +127,6 @@ public class GameManager : MonoBehaviour
         }
 
         colorAssistPrefab = (GameObject)Resources.Load("Prefabs/Effects/ColorAssistText");
-        gameStartTime = Time.time;
     }
 
     private void AssignMissingSettings()
@@ -139,21 +148,21 @@ public class GameManager : MonoBehaviour
             scoreText.text = PlayerScore.ToString();
 
             detailMultiplier = lowDetailEnabled ? 0.5f : 1;
+            currentEra = SetCurrentEra(Time.time - gameStartTime);
+
+            if (GameObject.Find("EnemyGeneral(Clone)"))
+            {
+                generalSpeedMultiplier = 1.15f;
+            }
+            else
+            {
+                generalSpeedMultiplier = 1;
+            }
         }
         else if (sceneName == "Settings")
         {
             colorAssistText.text = EnabledOrDisabled(colorAssistEnabled);
             lowDetailText.text = EnabledOrDisabled(lowDetailEnabled);
-        }
-
-        currentEra = SetCurrentEra(Time.time - gameStartTime);
-        if (GameObject.Find("EnemyGeneral(Clone)"))
-        {
-            generalSpeedMultiplier = 1.15f;
-        }
-        else
-        {
-            generalSpeedMultiplier = 1;
         }
     }
 
@@ -183,34 +192,35 @@ public class GameManager : MonoBehaviour
     IEnumerator SpawnSequence()
     {
         // check available units with the current spawn score
-        List<GameObject> readyEnemies = new();
+        List<Enums.Enemies> readyEnemies = new();
         for (int i = 0; i < Enum.GetNames(typeof(Enums.Enemies)).Length; i++)
         {
             Enemy enemyScript = enemyPrefabs[i].GetComponent<Enemy>();
             if (spawnScore >= enemyScript.spawnScore)
             {
-                readyEnemies.Add(enemyPrefabs[i]);
+                readyEnemies.Add((Enums.Enemies)i);
             }
         }
 
         // check the spawn time and remove enemies that cannot be spawned yet
-        List<GameObject> readyEnemiesFiltered = new();
-        foreach (GameObject enemy in readyEnemies)
+        List<Enums.Enemies> readyEnemiesFiltered = new();
+        for (int i = 0; i < readyEnemies.Count; i++)
         {
-            Enemy enemyScript = enemy.GetComponent<Enemy>();
+            Enemy enemyScript = enemyPrefabs[(int)readyEnemies[i]].GetComponent<Enemy>();
             if (enemyScript.firstSpawnTime <= Time.time - gameStartTime)
-            {
-                // if it is that enemy's era, add it twice
-                if (enemyScript.PreferedEra == currentEra)
+            {                
+                readyEnemiesFiltered.Add((Enums.Enemies)i);
+
+                // if it is that enemy's era, add it again
+                if (enemyScript.preferedEra == currentEra)
                 {
-                    readyEnemiesFiltered.Add(enemy);
+                    readyEnemiesFiltered.Add((Enums.Enemies)i);
                     // if the era is end, add it again
                     if (currentEra == Enums.Era.End)
                     {
-                        readyEnemiesFiltered.Add(enemy);
+                        readyEnemiesFiltered.Add((Enums.Enemies)i);
                     }
                 }
-                readyEnemiesFiltered.Add(enemy);
             }
         }
 
@@ -238,9 +248,9 @@ public class GameManager : MonoBehaviour
             {
                 // spawn it, take away spawn score equal to the amount it took to spawn
                 int randomIndex = Rand.Range(0, readyEnemiesFiltered.Count);
-                GameObject enemyToSpawn = readyEnemiesFiltered[randomIndex];
-                spawnScore -= enemyToSpawn.GetComponent<Enemy>().spawnScore;
-                SpawnEnemy((Enums.Enemies)randomIndex, effectToGive);
+                Enums.Enemies enemyToSpawn = readyEnemiesFiltered[randomIndex];
+                spawnScore -= enemyPrefabs[(int)enemyToSpawn].GetComponent<Enemy>().spawnScore;
+                SpawnEnemy(enemyToSpawn, effectToGive);
             }
             else
             {
@@ -260,15 +270,15 @@ public class GameManager : MonoBehaviour
                 // give the effect
                 // same code from above
                 int randomIndex = Rand.Range(0, readyEnemiesFiltered.Count);
-                GameObject enemyToSpawn = readyEnemiesFiltered[randomIndex];
-                spawnScore -= enemyToSpawn.GetComponent<Enemy>().spawnScore;
+                Enums.Enemies enemyToSpawn = readyEnemiesFiltered[randomIndex];
+                spawnScore -= enemyPrefabs[(int)enemyToSpawn].GetComponent<Enemy>().spawnScore;
                 if (didChooseEffect)
                 {
-                    SpawnEnemy((Enums.Enemies)randomIndex, effectToGive);
+                    SpawnEnemy(enemyToSpawn, effectToGive);
                 }
                 else
                 {
-                    SpawnEnemy((Enums.Enemies)randomIndex, Enums.EnemyEffects.Normal);
+                    SpawnEnemy(enemyToSpawn, Enums.EnemyEffects.Normal);
                 }
             }
 
@@ -375,8 +385,8 @@ public class GameManager : MonoBehaviour
 
     Enums.Era SetCurrentEra(float currentGameTime)
     {
-        // note: the end of early game is 10 seconds, not the start
-        // which is why the early enum holds a value of 10
+        // note: the end of early game is 20 seconds, not the start
+        // which is why the early enum holds a value of 20
         if (currentGameTime <= (int)Enums.Era.Early)
         {
             return Enums.Era.Early;

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class EnemyElite : Enemy
 {
@@ -10,8 +11,8 @@ public class EnemyElite : Enemy
 
     private void OnEnable()
     {
-        Type = Enums.Enemies.Elite;
-        PreferedEra = Enums.Era.Late;
+        type = Enums.Enemies.Elite;
+        preferedEra = Enums.Era.Late;
     }
 
     public override void DealDamage(int amount)
@@ -39,17 +40,21 @@ public class EnemyElite : Enemy
             speed = afterSpeed;
         }
 
-        float xPos = transform.position.x;
-        float zPos = transform.position.z;
-        if (xPos <= -4 || xPos >= 4)
+        // only for the handbook manager
+        if (SceneManager.GetActiveScene() == SceneManager.GetSceneByBuildIndex(1))
         {
-            Destroy(gameObject);
-        }
-        else if (zPos <= -1 || zPos >= 10)
-        {
-            Destroy(gameObject);
-        }
+            float xPos = transform.position.x;
+            float zPos = transform.position.z;
+            if (xPos <= -4 || xPos >= 4)
+            {
+                Destroy(gameObject);
+            }
+            else if (zPos <= -1 || zPos >= 10)
+            {
+                Destroy(gameObject);
+            }
 
-        MoveToExit();
+            MoveToExit();
+        }
     }
 }

@@ -147,12 +147,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2af30baae5af9fd4abe34e05f294e73b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  type: 6
+  preferedEra: 80
+  firstSpawnTime: 0
   speed: 1.5
   health: 40
   maxHealth: 0
   spawnScore: 0
   defeatScore: 10
-  firstSpawnTime: 0
   deathEffect: {fileID: 6965971869675623248}
 --- !u!1 &6965971869675623248
 GameObject:

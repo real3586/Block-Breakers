@@ -147,12 +147,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a02be5631d8516c4fb4d6f4eb33f5667, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  type: 6
+  preferedEra: 80
+  firstSpawnTime: 30
   speed: 1
   health: 160
   maxHealth: 0
-  spawnScore: 65
-  defeatScore: 70
-  firstSpawnTime: 25
+  spawnScore: 35
+  defeatScore: 40
   deathEffect: {fileID: 7817014598687415639}
   swarm2Prefab: {fileID: 5075067536646741178, guid: 46b0aa1ea28c6e14a8f7994357e9646d, type: 3}
 --- !u!1001 &4986929779444869142

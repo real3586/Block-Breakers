@@ -8,8 +8,8 @@ public class EnemyHardened : Enemy
 
     private void OnEnable()
     {
-        Type = Enums.Enemies.Hardened;
-        PreferedEra = Enums.Era.Late;
+        type = Enums.Enemies.Hardened;
+        preferedEra = Enums.Era.Late;
     }
 
     public override void DealDamage(int amount)

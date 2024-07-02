@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class EnemyTank : Enemy
 {
@@ -9,8 +10,8 @@ public class EnemyTank : Enemy
 
     private void OnEnable()
     {
-        Type = Enums.Enemies.Tank;
-        PreferedEra = Enums.Era.Mid;
+        type = Enums.Enemies.Tank;
+        preferedEra = Enums.Era.Mid;
     }
 
     protected override void Update()
@@ -26,17 +27,21 @@ public class EnemyTank : Enemy
             speed = afterSpeed;
         }
 
-        float xPos = transform.position.x;
-        float zPos = transform.position.z;
-        if (xPos <= -4 || xPos >= 4)
+        // only for the handbook manager
+        if (SceneManager.GetActiveScene() == SceneManager.GetSceneByBuildIndex(1))
         {
-            Destroy(gameObject);
-        }
-        else if (zPos <= -1 || zPos >= 10)
-        {
-            Destroy(gameObject);
-        }
+            float xPos = transform.position.x;
+            float zPos = transform.position.z;
+            if (xPos <= -4 || xPos >= 4)
+            {
+                Destroy(gameObject);
+            }
+            else if (zPos <= -1 || zPos >= 10)
+            {
+                Destroy(gameObject);
+            }
 
-        MoveToExit();
+            MoveToExit();
+        }
     }
 }

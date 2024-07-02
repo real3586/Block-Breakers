@@ -2,11 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Enemy : MonoBehaviour
 {
-    public Enums.Enemies Type { get; protected set; }
-    public Enums.Era PreferedEra { get; protected set; }
+    public Enums.Enemies type;
+    public Enums.Era preferedEra;    
+    public float firstSpawnTime;
 
     public float speed;
     public int health;
@@ -14,7 +16,6 @@ public class Enemy : MonoBehaviour
 
     public int spawnScore;
     public int defeatScore;
-    public float firstSpawnTime;
 
     public float Angle { protected get; set; }
 
@@ -37,18 +38,24 @@ public class Enemy : MonoBehaviour
             Death();
         }
 
-        float xPos = transform.position.x;
-        float zPos = transform.position.z;
-        if (xPos <= -4 || xPos >= 4)
+        // only for the handbook manager
+        if (SceneManager.GetActiveScene() == SceneManager.GetSceneByBuildIndex(1))
         {
-            Destroy(gameObject);
-        }
-        else if (zPos <= -1 || zPos >= 10)
-        {
-            Destroy(gameObject);
-        }
+            float xPos = transform.position.x;
+            float zPos = transform.position.z;
 
-        MoveToExit();
+            // out of bound safeguards
+            if (xPos <= -4 || xPos >= 4)
+            {
+                Destroy(gameObject);
+            }
+            else if (zPos <= -1 || zPos >= 10)
+            {
+                Destroy(gameObject);
+            }
+
+            MoveToExit();
+        }
     }
 
     protected virtual void MoveToExit()

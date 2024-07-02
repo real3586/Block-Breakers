@@ -6,7 +6,7 @@ public class EnemySlow : Enemy
 {
     private void OnEnable()
     {
-        Type = Enums.Enemies.Slow;
-        PreferedEra = Enums.Era.Early;
+        type = Enums.Enemies.Slow;
+        preferedEra = Enums.Era.Early;
     }
 }

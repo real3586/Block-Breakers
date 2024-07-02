@@ -4876,7 +4876,7 @@ Transform:
   m_Children:
   - {fileID: 9044124207789801134}
   m_Father: {fileID: 0}
-  m_RootOrder: 9
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &851160312443380874
 MeshFilter:
@@ -4988,10 +4988,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d7b2cad60c865c64cb8d021ae50b6b7e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 0.25
-  health: 2400
+  type: 10
+  preferedEra: 151
+  firstSpawnTime: 140
+  speed: 0.4
+  health: 2800
   maxHealth: 0
-  spawnScore: 135
-  defeatScore: 210
-  firstSpawnTime: 85
+  spawnScore: 120
+  defeatScore: 240
   deathEffect: {fileID: 3155340066895148525}
