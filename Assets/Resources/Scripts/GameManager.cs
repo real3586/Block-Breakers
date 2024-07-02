@@ -17,7 +17,7 @@ public class GameManager : MonoBehaviour
     public int PlayerScore { get; set; }
     [SerializeField] TextMeshProUGUI scoreText;
 
-    int spawnScore, spawnScoreRate;
+    int playerScoreRate, spawnScore, spawnScoreRate;
     List<GameObject> enemyPrefabs = new();
     List<GameObject> effectPrefabs = new();
     GameObject colorAssistPrefab;
@@ -88,6 +88,7 @@ public class GameManager : MonoBehaviour
     private void AssignMissingMain()
     {
         PlayerScore = 0;
+        playerScoreRate = 2;
         PlayerHealth = 100;
         spawnScore = 10;
         spawnScoreRate = 1;
@@ -336,12 +337,14 @@ public class GameManager : MonoBehaviour
     IEnumerator ScoreIncrementSequence()
     {
         yield return new WaitForSeconds(6);
-        PlayerScore += 2;
+        playerScoreRate++;
         spawnScoreRate++;
         if (currentEra == Enums.Era.Late || currentEra == Enums.Era.End)
         {
+            playerScoreRate++;
             spawnScoreRate++;
         }
+        PlayerScore += playerScoreRate;
         StartCoroutine(ScoreIncrementSequence());
     }
 
