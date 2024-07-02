@@ -301,9 +301,8 @@ public class GameManager : MonoBehaviour
     void SpawnEnemy(Enums.Enemies enemyType, Enums.EnemyEffects effect)
     {
         float randX = Rand.Range(-2.0f, 2.0f);
-        float randZ = Rand.Range(8.0f, 9.0f);
 
-        Vector3 spawnPos = new(randX, 0, randZ);
+        Vector3 spawnPos = new(randX, 0, 9);
 
         // assign the direction angle for the enemies to take
         // in Unity the degrees are a compass, 0 degrees is North, and rotation follows clockwise

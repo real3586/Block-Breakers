@@ -29,7 +29,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1384620860674848592}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 8.57}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.6, y: 0.6, z: 0.6}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -147,13 +147,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8bfc188b0d283744d9796856be214cd6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  type: 0
   preferedEra: 20
+  firstSpawnTime: 0
   speed: 2
   health: 4
   maxHealth: 0
   spawnScore: 2
   defeatScore: 1
-  firstSpawnTime: 0
   deathEffect: {fileID: 7622817766450778385}
 --- !u!1001 &4649701860955612240
 PrefabInstance:
