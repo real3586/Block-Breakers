@@ -149,12 +149,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   type: 7
   preferedEra: 150
-  firstSpawnTime: 75
-  speed: 0.8
-  health: 350
+  firstSpawnTime: 80
+  speed: 0.9
+  health: 500
   maxHealth: 0
   spawnScore: 50
-  defeatScore: 90
+  defeatScore: 60
   deathEffect: {fileID: 7748083322312312207}
   damageReduction: 5
 --- !u!1001 &4812104796442161358

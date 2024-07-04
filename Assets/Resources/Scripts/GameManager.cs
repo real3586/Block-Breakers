@@ -95,7 +95,7 @@ public class GameManager : MonoBehaviour
         playerScoreRate = 2;
         PlayerHealth = 100;
         spawnScore = 10;
-        spawnScoreRate = 1;
+        spawnScoreRate = 2;
         chillMultiplier = 1;
         evolvedEnemyCount = 0;
         generalSpeedMultiplier = 1;
@@ -198,33 +198,25 @@ public class GameManager : MonoBehaviour
             Enemy enemyScript = enemyPrefabs[i].GetComponent<Enemy>();
             if (spawnScore >= enemyScript.spawnScore)
             {
-                readyEnemies.Add((Enums.Enemies)i);
-            }
-        }
-
-        // check the spawn time and remove enemies that cannot be spawned yet
-        List<Enums.Enemies> readyEnemiesFiltered = new();
-        for (int i = 0; i < readyEnemies.Count; i++)
-        {
-            Enemy enemyScript = enemyPrefabs[(int)readyEnemies[i]].GetComponent<Enemy>();
-            if (enemyScript.firstSpawnTime <= Time.time - gameStartTime)
-            {                
-                readyEnemiesFiltered.Add((Enums.Enemies)i);
-
-                // if it is that enemy's era, add it again
-                if (enemyScript.preferedEra == currentEra)
+                // then check spawn time
+                if (Time.time - gameStartTime >= enemyScript.firstSpawnTime)
                 {
-                    readyEnemiesFiltered.Add((Enums.Enemies)i);
-                    // if the era is end, add it again
-                    if (currentEra == Enums.Era.End)
+                    readyEnemies.Add((Enums.Enemies)i);
+                    // if it is that enemy's era, add it again
+                    if (enemyScript.preferedEra == currentEra)
                     {
-                        readyEnemiesFiltered.Add((Enums.Enemies)i);
+                        readyEnemies.Add((Enums.Enemies)i);
+                        // if the era is end, add it again
+                        if (currentEra == Enums.Era.End)
+                        {
+                            readyEnemies.Add((Enums.Enemies)i);
+                        }
                     }
                 }
             }
         }
 
-        if (readyEnemiesFiltered.Count > 0)
+        if (readyEnemies.Count > 0)
         {
             // chance for the spawned enemy to have a random effect, only one at a time though
             // all effects have a 1 in 10 chance of happening except normal
@@ -247,15 +239,15 @@ public class GameManager : MonoBehaviour
             if (didChooseEffect)
             {
                 // spawn it, take away spawn score equal to the amount it took to spawn
-                int randomIndex = Rand.Range(0, readyEnemiesFiltered.Count);
-                Enums.Enemies enemyToSpawn = readyEnemiesFiltered[randomIndex];
+                int randomIndex = Rand.Range(0, readyEnemies.Count);
+                Enums.Enemies enemyToSpawn = readyEnemies[randomIndex];
                 spawnScore -= enemyPrefabs[(int)enemyToSpawn].GetComponent<Enemy>().spawnScore;
                 SpawnEnemy(enemyToSpawn, effectToGive);
             }
             else
             {
                 // randomly decide the effect
-                // 10% separate odds for each one
+                // 1 in 10 separate odds for each one
                 for (int i = 0; i < effectCount.Length; i++)
                 {
                     int randomInteger = Rand.Range(1, 11);
@@ -269,8 +261,8 @@ public class GameManager : MonoBehaviour
 
                 // give the effect
                 // same code from above
-                int randomIndex = Rand.Range(0, readyEnemiesFiltered.Count);
-                Enums.Enemies enemyToSpawn = readyEnemiesFiltered[randomIndex];
+                int randomIndex = Rand.Range(0, readyEnemies.Count);
+                Enums.Enemies enemyToSpawn = readyEnemies[randomIndex];
                 spawnScore -= enemyPrefabs[(int)enemyToSpawn].GetComponent<Enemy>().spawnScore;
                 if (didChooseEffect)
                 {

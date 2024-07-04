@@ -5,7 +5,7 @@ using UnityEngine;
 public class Enums : MonoBehaviour
 {
     public enum Enemies { Basic, Speedy, Slow, Boss, Tank, Turbo, Swarm, Hardened, Elite, Evolved, General, /*Final_Boss*/ }
-    public enum Era { Early = 20, Mid = 80, Late = 150, End }
+    public enum Era { Early = 30, Mid = 90, Late = 150, End }
     public enum EnemyEffects { Power, Reload, Explosion, Chill, FireRate, 
         Normal, }
 }

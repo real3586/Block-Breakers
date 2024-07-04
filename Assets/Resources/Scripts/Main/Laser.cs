@@ -9,10 +9,10 @@ public class Laser : MonoBehaviour
 
     RaycastHit hitInfo = new();
 
-    const float baseRotation = 250, baseDelay = 0.15f, baseReload = 1.5f;
+    const float baseRotation = 250, baseDelay = 0.15f, baseReload = 1f;
     [SerializeField] float rotationSpeed = 250;
     [SerializeField] float laserDelay = 0.15f;
-    [SerializeField] float laserReloadDelay = 1.5f;
+    [SerializeField] float laserReloadDelay = 1f;
     public int LaserMaxRounds { get; private set; } = 30;
     public int LaserRounds { get; set; }
     [SerializeField] TextMeshProUGUI reloadingText;
@@ -74,15 +74,19 @@ public class Laser : MonoBehaviour
             transform.localRotation = combinedRotation;
         }
 
-        // laser reload speed increases with health lost (linearly)
-        laserReloadDelay = 0.009375f * GameManager.Instance.PlayerHealth + 0.5625f;
+        // laser reload speed increases with fire rate
+        // as fire rate approaches 0, reload approaches 0.25
+        laserReloadDelay = 0.25f * Mathf.Pow(10321.3f, laserDelay);
 
         // and rotation speed
-        rotationSpeed = (-3.125f * GameManager.Instance.PlayerHealth + 562.5f) * GameManager.Instance.detailMultiplier;
+        // approaches 500 as fire rate approaches 0
+        rotationSpeed = 1000 * Mathf.Pow(0.0000968f, laserDelay) * GameManager.Instance.detailMultiplier;
 
         // and the spark particle emission, because why not
+        // approaches 10 as fire rate approaches 0
+        // base emission is 5
         var sparksEmission = sparks.emission;
-        sparksEmission.rateOverTime = (-0.125f * GameManager.Instance.PlayerHealth + 17.5f) * GameManager.Instance.detailMultiplier;
+        sparksEmission.rateOverTime = 20 * Mathf.Pow(0.0000968f, laserDelay) * GameManager.Instance.detailMultiplier;
     }
 
     IEnumerator LaserCoroutine()
@@ -114,6 +118,6 @@ public class Laser : MonoBehaviour
 
     public void EffectFireRate()
     {
-        laserDelay *= 0.95f;
+        laserDelay *= 0.96f;
     }
 }

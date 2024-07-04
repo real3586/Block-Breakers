@@ -4990,10 +4990,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   type: 10
   preferedEra: 151
-  firstSpawnTime: 140
-  speed: 0.4
-  health: 2800
+  firstSpawnTime: 145
+  speed: 0.3
+  health: 3200
   maxHealth: 0
-  spawnScore: 120
-  defeatScore: 240
+  spawnScore: 150
+  defeatScore: 200
   deathEffect: {fileID: 3155340066895148525}

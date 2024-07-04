@@ -148,13 +148,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 5
-  preferedEra: 80
-  firstSpawnTime: 20
+  preferedEra: 90
+  firstSpawnTime: 30
   speed: 4
-  health: 35
+  health: 30
   maxHealth: 0
-  spawnScore: 20
-  defeatScore: 20
+  spawnScore: 25
+  defeatScore: 25
   deathEffect: {fileID: 8121810151508920308}
 --- !u!1001 &6483151734045110965
 PrefabInstance:

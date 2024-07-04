@@ -148,13 +148,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 6
-  preferedEra: 80
-  firstSpawnTime: 30
+  preferedEra: 90
+  firstSpawnTime: 40
   speed: 1
-  health: 160
+  health: 200
   maxHealth: 0
-  spawnScore: 35
-  defeatScore: 40
+  spawnScore: 40
+  defeatScore: 25
   deathEffect: {fileID: 7817014598687415639}
   swarm2Prefab: {fileID: 5075067536646741178, guid: 46b0aa1ea28c6e14a8f7994357e9646d, type: 3}
 --- !u!1001 &4986929779444869142

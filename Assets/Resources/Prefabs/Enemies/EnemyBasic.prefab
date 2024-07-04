@@ -148,7 +148,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 0
-  preferedEra: 20
+  preferedEra: 30
   firstSpawnTime: 0
   speed: 2
   health: 4
