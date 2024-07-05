@@ -190,26 +190,38 @@ public class GameManager : MonoBehaviour
     }
 
     IEnumerator SpawnSequence()
-    {
-        // check available units with the current spawn score
+    {            
         List<Enums.Enemies> readyEnemies = new();
-        for (int i = 0; i < Enum.GetNames(typeof(Enums.Enemies)).Length; i++)
+        // if the game has gone on for 5 minutes, only spawn final bosses and generals
+        if (Time.time - gameStartTime >= 300)
         {
-            Enemy enemyScript = enemyPrefabs[i].GetComponent<Enemy>();
-            if (spawnScore >= enemyScript.spawnScore)
+            readyEnemies.Add(Enums.Enemies.FinalBoss);
+            readyEnemies.Add(Enums.Enemies.FinalBoss);
+            readyEnemies.Add(Enums.Enemies.FinalBoss);
+            readyEnemies.Add(Enums.Enemies.FinalBoss);
+            readyEnemies.Add(Enums.Enemies.General);
+        }
+        else
+        {
+            // check available units with the current spawn score
+            for (int i = 0; i < Enum.GetNames(typeof(Enums.Enemies)).Length; i++)
             {
-                // then check spawn time
-                if (Time.time - gameStartTime >= enemyScript.firstSpawnTime)
+                Enemy enemyScript = enemyPrefabs[i].GetComponent<Enemy>();
+                if (spawnScore >= enemyScript.spawnScore)
                 {
-                    readyEnemies.Add((Enums.Enemies)i);
-                    // if it is that enemy's era, add it again
-                    if (enemyScript.preferedEra == currentEra)
+                    // then check spawn time
+                    if (Time.time - gameStartTime >= enemyScript.firstSpawnTime)
                     {
                         readyEnemies.Add((Enums.Enemies)i);
-                        // if the era is end, add it again
-                        if (currentEra == Enums.Era.End)
+                        // if it is that enemy's era, add it again
+                        if (enemyScript.preferedEra == currentEra)
                         {
                             readyEnemies.Add((Enums.Enemies)i);
+                            // if the era is end, add it again
+                            if (currentEra == Enums.Era.End)
+                            {
+                                readyEnemies.Add((Enums.Enemies)i);
+                            }
                         }
                     }
                 }
@@ -221,66 +233,72 @@ public class GameManager : MonoBehaviour
             // chance for the spawned enemy to have a random effect, only one at a time though
             // all effects have a 1 in 10 chance of happening except normal
             Enums.EnemyEffects effectToGive = Enums.EnemyEffects.Normal;
-            bool didChooseEffect = false;
-            for (int i = 0; i < effectCount.Length; i++)
+            int randomIndex = Rand.Range(0, readyEnemies.Count);
+            Enums.Enemies enemyToSpawn = readyEnemies[randomIndex];            
+            
+            // final bosses will not have effects, so it just won't choose any effects
+            if (enemyToSpawn != Enums.Enemies.FinalBoss)
             {
-                // if 10 enemies have spawned without an effect, the next effect to give is that one
-                if (effectCount[i] >= 10)
-                {
-                    effectToGive = (Enums.EnemyEffects)i;
-                    didChooseEffect = true;
-
-                    // reset the counter
-                    effectCount[i] = 0;
-                    break;
-                }
-            }
-
-            if (didChooseEffect)
-            {
-                // spawn it, take away spawn score equal to the amount it took to spawn
-                int randomIndex = Rand.Range(0, readyEnemies.Count);
-                Enums.Enemies enemyToSpawn = readyEnemies[randomIndex];
-                spawnScore -= enemyPrefabs[(int)enemyToSpawn].GetComponent<Enemy>().spawnScore;
-                SpawnEnemy(enemyToSpawn, effectToGive);
-            }
-            else
-            {
-                // randomly decide the effect
-                // 1 in 10 separate odds for each one
+                bool didChooseEffect = false;
                 for (int i = 0; i < effectCount.Length; i++)
                 {
-                    int randomInteger = Rand.Range(1, 11);
-                    if (randomInteger == 1)
+                    // if 10 enemies have spawned without a specific effect, the next effect to give is that one
+                    if (effectCount[i] >= 10)
                     {
                         effectToGive = (Enums.EnemyEffects)i;
                         didChooseEffect = true;
+
+                        // reset the counter
+                        effectCount[i] = 0;
                         break;
                     }
                 }
 
-                // give the effect
-                // same code from above
-                int randomIndex = Rand.Range(0, readyEnemies.Count);
-                Enums.Enemies enemyToSpawn = readyEnemies[randomIndex];
-                spawnScore -= enemyPrefabs[(int)enemyToSpawn].GetComponent<Enemy>().spawnScore;
                 if (didChooseEffect)
                 {
+                    // spawn it with that effect
                     SpawnEnemy(enemyToSpawn, effectToGive);
                 }
                 else
                 {
-                    SpawnEnemy(enemyToSpawn, Enums.EnemyEffects.Normal);
+                    // randomly decide the effect
+                    // 1 in 10 separate odds for each one
+                    for (int i = 0; i < effectCount.Length; i++)
+                    {
+                        int randomInteger = Rand.Range(1, 11);
+                        if (randomInteger == 1)
+                        {
+                            effectToGive = (Enums.EnemyEffects)i;
+                            didChooseEffect = true;
+                            break;
+                        }
+                    }
+
+                    // give the effect
+                    if (didChooseEffect)
+                    {
+                        SpawnEnemy(enemyToSpawn, effectToGive);
+                    }
+                    else
+                    {
+                        SpawnEnemy(enemyToSpawn, Enums.EnemyEffects.Normal);
+                    }
+                }
+
+                // increase the effect count of every effect that wasn't given
+                // final boss spawns don't cause this to happen
+                for (int i = 0; i < effectCount.Length; i++)
+                {
+                    if (i != (int)effectToGive)
+                    {
+                        effectCount[i]++;
+                    }
                 }
             }
-
-            // increase the effect count of every effect that wasn't given
-            for (int i = 0; i < effectCount.Length; i++)
+            else
             {
-                if (i != (int)effectToGive)
-                {
-                    effectCount[i]++;
-                }
+                // final boss catch
+                SpawnEnemy(enemyToSpawn, Enums.EnemyEffects.Normal);
             }
         }
         yield return new WaitForSeconds(1);
@@ -298,8 +316,8 @@ public class GameManager : MonoBehaviour
 
         // assign the direction angle for the enemies to take
         // in Unity the degrees are a compass, 0 degrees is North, and rotation follows clockwise
-        // for the variable ignore the outer 20 degrees and the center 60 degrees
-        float angle = Rand.Range(1, 3) == 1 ? Rand.Range(110.0f, 150.0f) : Rand.Range(210.0f, 250.0f);
+        // for the variable ignore the outer 20 degrees and the center 70 degrees
+        float angle = Rand.Range(1, 3) == 1 ? Rand.Range(110.0f, 145.0f) : Rand.Range(215.0f, 250.0f);
 
         GameObject newEnemy = Instantiate(enemyPrefabs[(int)enemyType]);
         newEnemy.transform.position = spawnPos;
@@ -307,7 +325,10 @@ public class GameManager : MonoBehaviour
         newEnemy.GetComponent<Enemy>().Angle = angle;
         newEnemy.tag = "Enemy";
 
+        spawnScore -= newEnemy.GetComponent<Enemy>().spawnScore;
+
         // account for the effect
+        // final bosses don't spawn with effects
         if (effect != Enums.EnemyEffects.Normal)
         {
             GameObject newEffect = Instantiate(effectPrefabs[(int)effect]);

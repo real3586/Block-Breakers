@@ -235,7 +235,7 @@ MonoBehaviour:
   preferedEra: 150
   firstSpawnTime: 120
   speed: 0.8
-  health: 800
+  health: 750
   maxHealth: 0
   spawnScore: 90
   defeatScore: 110

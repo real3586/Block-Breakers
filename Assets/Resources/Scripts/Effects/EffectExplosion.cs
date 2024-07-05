@@ -59,7 +59,13 @@ public class EffectExplosion : Effect
         // explosion damage is handled by game manager
         for (int i = 0; i < enemiesToExplode.Count; i++)
         {
-            enemiesToExplode[i].GetComponent<Enemy>().DealDamage(explosionDamage);
+            Enemy enemyScript = enemiesToExplode[i].GetComponent<Enemy>();
+
+            // final boss is unaffected by explosion damage
+            if (enemyScript.type != Enums.Enemies.FinalBoss)
+            {
+                enemyScript.DealDamage(explosionDamage);
+            }
         }
 
         yield return new WaitForSeconds(0.4f);

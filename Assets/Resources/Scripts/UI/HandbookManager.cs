@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -33,7 +32,8 @@ public class HandbookManager : MonoBehaviour
         "Takes 5 less damage when hit",
         "Hardened + Tank effects",
         "Gets stronger the more that have spawned",
-        "Makes other enemies faster"
+        "Makes other enemies faster",
+        "Uneffected by effects, including on spawn"
     };
 
     private void Awake()
