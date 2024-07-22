@@ -17,6 +17,8 @@ public class GameManager : MonoBehaviour
     public int PlayerScore { get; set; }
     [SerializeField] TextMeshProUGUI scoreText;
 
+    public Enums.LaserEffects currentLaserEffect;
+
     int playerScoreRate, spawnScore, spawnScoreRate;
     public List<GameObject> enemyPrefabs = new();
     List<GameObject> effectPrefabs = new();
@@ -29,6 +31,7 @@ public class GameManager : MonoBehaviour
     GameObject gameStart;
     TextMeshProUGUI counter;
     GameObject pauseStuff, pauseButton;
+    GameObject timeScaleButton;
 
     public float chillMultiplier = 1;
     public float detailMultiplier = 1;
@@ -83,6 +86,7 @@ public class GameManager : MonoBehaviour
                 break;
             case "Menu":
                 StopAllCoroutines();
+                Time.timeScale = 1;
                 break;
             default:
                 break;
@@ -107,6 +111,7 @@ public class GameManager : MonoBehaviour
         pauseStuff = GameObject.Find("Pause Stuff");
         pauseStuff.SetActive(false);
         pauseButton = GameObject.Find("PauseButton");
+        timeScaleButton = GameObject.Find("TimeScale");
 
         LoadPrefabs();
         gameStartTime = Time.time;
@@ -168,6 +173,7 @@ public class GameManager : MonoBehaviour
 
     IEnumerator CountdownSequence(bool isGameStart)
     {
+        timeScaleButton.SetActive(false);
         pauseButton.SetActive(false);
         Time.timeScale = 0;
         counter.text = "3";
@@ -180,6 +186,7 @@ public class GameManager : MonoBehaviour
         yield return new WaitForSecondsRealtime(1);
         gameStart.SetActive(false);
         Time.timeScale = 1;
+        timeScaleButton.SetActive(true);
         pauseButton.SetActive(true);
 
         if (isGameStart)

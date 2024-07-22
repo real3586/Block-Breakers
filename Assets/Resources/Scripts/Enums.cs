@@ -8,4 +8,5 @@ public class Enums : MonoBehaviour
     public enum Era { Early = 30, Mid = 90, Late = 150, End }
     public enum EnemyEffects { Power, Reload, Explosion, Chill, FireRate, 
         Normal, }
+    public enum LaserEffects { Normal, }
 }

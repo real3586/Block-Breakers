@@ -514,6 +514,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   healthText: {fileID: 0}
   scoreText: {fileID: 0}
+  currentLaserEffect: 0
   enemyPrefabs: []
   allEnemies: {fileID: 0}
   chillMultiplier: 1
@@ -778,7 +779,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9bdd02dfe73be624093053fb734abb90, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sceneName: Main
+  sceneName: TurretSelect
 --- !u!1 &1318773093
 GameObject:
   m_ObjectHideFlags: 0
@@ -1255,7 +1256,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: V 1.2
+  m_text: V 1.3
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
