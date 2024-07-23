@@ -27,6 +27,9 @@ public class GameManager : MonoBehaviour
     int[] effectCount = new int[Enum.GetNames(typeof(Enums.EnemyEffects)).Length - 1];
 
     public GameObject allEnemies;
+    [SerializeField]
+    GameObject mainCanvas;
+    bool isGameInitialized = false, spawnSequenceCalled = false;
 
     string sceneName;
     GameObject gameStart;
@@ -74,13 +77,20 @@ public class GameManager : MonoBehaviour
         switch (sceneName)
         {
             case "Main":
-                AssignMissingMain();
-                StartCoroutine(CountdownSequence(true));
+                if (!isGameInitialized)
+                {
+                    AssignMissingMain();
+                    isGameInitialized = true;
+                }
+                StartCoroutine(CountdownSequence());
                 break;
             case "LoseScreen":
                 StopAllCoroutines();
                 GameObject.Find("Final Score").GetComponent<TextMeshProUGUI>().text = 
                     "Final Score: " + PlayerScore;
+
+                isGameInitialized = false;
+                spawnSequenceCalled = false;
                 break;
             case "Settings":
                 AssignMissingSettings();
@@ -88,6 +98,9 @@ public class GameManager : MonoBehaviour
             case "Menu":
                 StopAllCoroutines();
                 Time.timeScale = 1;
+
+                isGameInitialized = false;
+                spawnSequenceCalled = false;
                 break;
             default:
                 break;
@@ -96,14 +109,6 @@ public class GameManager : MonoBehaviour
 
     private void AssignMissingMain()
     {
-        PlayerScore = 0;
-        playerScoreRate = 2;
-        PlayerHealth = 100;
-        spawnScore = 10;
-        spawnScoreRate = 2;
-        chillMultiplier = 1;
-        evolvedEnemyCount = 0;
-        generalSpeedMultiplier = 1;
         healthText = GameObject.Find("Health Text").GetComponent<TextMeshProUGUI>();
         scoreText = GameObject.Find("Score Text").GetComponent<TextMeshProUGUI>();
         allEnemies = GameObject.Find("AllEnemies");
@@ -113,6 +118,16 @@ public class GameManager : MonoBehaviour
         pauseStuff.SetActive(false);
         pauseButton = GameObject.Find("PauseButton");
         timeScaleButton = GameObject.Find("TimeScale");
+        mainCanvas = GameObject.Find("Canvas");
+
+        PlayerScore = 0;
+        playerScoreRate = 2;
+        PlayerHealth = 100;
+        spawnScore = 10;
+        spawnScoreRate = 2;
+        chillMultiplier = 1;
+        evolvedEnemyCount = 0;
+        generalSpeedMultiplier = 1;
 
         LoadPrefabs();
         gameStartTime = Time.time;
@@ -179,7 +194,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    IEnumerator CountdownSequence(bool isGameStart)
+    IEnumerator CountdownSequence()
     {
         timeScaleButton.SetActive(false);
         pauseButton.SetActive(false);
@@ -196,11 +211,14 @@ public class GameManager : MonoBehaviour
         Time.timeScale = 1;
         timeScaleButton.SetActive(true);
         pauseButton.SetActive(true);
+        timeScaleButton.GetComponent<TimeScaleButton>().ResetIndex();
 
-        if (isGameStart)
+        if (!spawnSequenceCalled)
         {
             StartCoroutine(SpawnSequence());
             StartCoroutine(ScoreIncrementSequence());
+
+            spawnSequenceCalled = true;
         }
     }
 
@@ -387,14 +405,7 @@ public class GameManager : MonoBehaviour
 
     string EnabledOrDisabled(bool x)
     {
-        if (x)
-        {
-            return "ENABLED";
-        }
-        else
-        {
-            return "DISABLED";
-        }
+        return x ? "ENABLED" : "DISABLED";
     }
 
     string EffectTypeToString(Enums.EnemyEffects effect)
@@ -437,6 +448,7 @@ public class GameManager : MonoBehaviour
         Time.timeScale = 0;
         pauseStuff.SetActive(true);
         pauseButton.SetActive(false);
+        timeScaleButton.SetActive(false);
     }
 
     public void ResumeGame()
@@ -444,6 +456,47 @@ public class GameManager : MonoBehaviour
         pauseStuff.SetActive(false);
         counter.text = "3";
         gameStart.SetActive(true);
-        StartCoroutine(CountdownSequence(false));
+        StartCoroutine(CountdownSequence());
+    }
+
+    public void LoadSettingsScene()
+    {
+        StartCoroutine(LoadSceneAsync("Settings"));
+    }
+
+    private IEnumerator LoadSceneAsync(string sceneName)
+    {
+        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive);
+
+        // Wait until the asynchronous scene fully loads
+        while (!asyncLoad.isDone)
+        {
+            yield return null;
+        }
+
+        Scene newScene = SceneManager.GetSceneByName(sceneName);
+        SceneManager.SetActiveScene(newScene);
+
+        GameObject.Find("Back").SetActive(false);
+        mainCanvas.SetActive(false);
+    }
+
+    public void UnloadSettingsScene()
+    {
+        StartCoroutine(UnloadSceneAsync("Settings"));
+    }
+
+    private IEnumerator UnloadSceneAsync(string sceneName)
+    {
+        AsyncOperation asyncUnload = SceneManager.UnloadSceneAsync(sceneName);
+
+        while (!asyncUnload.isDone)
+        {
+            yield return null;
+        }
+
+        Scene main = SceneManager.GetSceneByName("Main");
+        SceneManager.SetActiveScene(main);
+        mainCanvas.SetActive(true);
     }
 }

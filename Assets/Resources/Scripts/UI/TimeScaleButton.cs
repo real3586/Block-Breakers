@@ -18,6 +18,11 @@ public class TimeScaleButton : MonoBehaviour
         }
         Time.timeScale = scales[index];
     }
+    
+    public void ResetIndex()
+    {
+        index = 1;
+    }
 
     private void Update()
     {
