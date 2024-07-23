@@ -6,16 +6,15 @@ using UnityEngine.UI;
 public class ReloadBar : MonoBehaviour
 {
     [SerializeField] Slider slider;
-    [SerializeField] Laser laser;
 
     private void Start()
     {
         slider.minValue = 0;
-        slider.maxValue = laser.LaserMaxRounds;
+        slider.maxValue = Laser.Instance.LaserMaxRounds;
     }
 
     void Update()
     {
-        slider.value = laser.LaserRounds;
+        slider.value = Laser.Instance.LaserRounds;
     }
 }

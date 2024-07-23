@@ -17,12 +17,13 @@ public class GameManager : MonoBehaviour
     public int PlayerScore { get; set; }
     [SerializeField] TextMeshProUGUI scoreText;
 
-    public Enums.LaserEffects currentLaserEffect;
+    public Enums.Lasers currentLaserEffect;
 
     int playerScoreRate, spawnScore, spawnScoreRate;
     public List<GameObject> enemyPrefabs = new();
     List<GameObject> effectPrefabs = new();
     GameObject colorAssistPrefab;
+    List<GameObject> laserPrefabs = new();
     int[] effectCount = new int[Enum.GetNames(typeof(Enums.EnemyEffects)).Length - 1];
 
     public GameObject allEnemies;
@@ -115,6 +116,8 @@ public class GameManager : MonoBehaviour
 
         LoadPrefabs();
         gameStartTime = Time.time;
+
+        Instantiate(laserPrefabs[(int)currentLaserEffect], Vector3.zero, Quaternion.identity);
     }
 
     private void LoadPrefabs()
@@ -129,6 +132,11 @@ public class GameManager : MonoBehaviour
         for (int i = 0; i < effectCount.Length; i++)
         {
             effectPrefabs.Add((GameObject)Resources.Load("Prefabs/Effects/Effect" + ((Enums.EnemyEffects)i).ToString()));
+        }
+        laserPrefabs.Clear();
+        for (int i = 0; i < Enum.GetNames(typeof(Enums.Lasers)).Length; i++)
+        {
+            laserPrefabs.Add((GameObject)Resources.Load("Prefabs/Lasers/Laser" + ((Enums.Lasers)i).ToString()));
         }
 
         colorAssistPrefab = (GameObject)Resources.Load("Prefabs/Effects/ColorAssistText");

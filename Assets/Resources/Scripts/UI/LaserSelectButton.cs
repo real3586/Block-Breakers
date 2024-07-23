@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 
 public class LaserSelectButton : MonoBehaviour
 {
-    [SerializeField] Enums.LaserEffects laserEffect;
+    [SerializeField] Enums.Lasers laserEffect;
     public void OnClick()
     {
         GameManager.Instance.currentLaserEffect = laserEffect;
