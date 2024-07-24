@@ -22,6 +22,8 @@ public abstract class Laser : MonoBehaviour
     protected ParticleSystem sparks;    
     protected TextMeshProUGUI reloadingText;
 
+    public GameObject target;
+
     protected abstract void Awake();
 
     void Start()
@@ -50,21 +52,36 @@ public abstract class Laser : MonoBehaviour
 
         // Raycast to find the point the mouse is pointing at
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        if (Physics.Raycast(ray, out RaycastHit hitInfo))
+        if (Physics.Raycast(ray, out RaycastHit hitInfo) && Time.timeScale != 0)
         {
             Quaternion combinedRotation;
             // if the laser is active, don't move or rotate
             if (!laserBeam.activeSelf)
             {
-                // Get the direction to the hit point
-                Vector3 directionToMouse = hitInfo.point - transform.position;
-                directionToMouse.y = 0;
+                if (GameManager.Instance.laserTargetingEnabled && target != null)
+                {
+                    // Get the direction to the enemy
+                    Vector3 directionToMouse = target.transform.position - transform.position;
+                    directionToMouse.y = 0;
 
-                // Calculate the new rotation to look at the mouse
-                Quaternion lookRotation = Quaternion.LookRotation(directionToMouse);
+                    // Calculate the new rotation to look at the mouse
+                    Quaternion lookRotation = Quaternion.LookRotation(directionToMouse);
 
-                // Combine the initial rotation, look rotation, and continuous rotation
-                combinedRotation = initialRotation * lookRotation * continuousRotation;
+                    // Combine the initial rotation, look rotation, and continuous rotation
+                    combinedRotation = initialRotation * lookRotation * continuousRotation;
+                }
+                else
+                {
+                    // Get the direction to the hit point
+                    Vector3 directionToMouse = hitInfo.point - transform.position;
+                    directionToMouse.y = 0;
+
+                    // Calculate the new rotation to look at the mouse
+                    Quaternion lookRotation = Quaternion.LookRotation(directionToMouse);
+
+                    // Combine the initial rotation, look rotation, and continuous rotation
+                    combinedRotation = initialRotation * lookRotation * continuousRotation;
+                }
             }
             else
             {

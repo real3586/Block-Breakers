@@ -53,6 +53,9 @@ public class GameManager : MonoBehaviour
 
     public bool lowDetailEnabled;
     TextMeshProUGUI lowDetailText;
+
+    public bool laserTargetingEnabled;
+    TextMeshProUGUI targetingText;
     #endregion
 
     private void Awake()
@@ -162,6 +165,8 @@ public class GameManager : MonoBehaviour
         colorAssistText = GameObject.Find("Color Assist Text").GetComponent<TextMeshProUGUI>();
 
         lowDetailText = GameObject.Find("Low Detail Text").GetComponent<TextMeshProUGUI>();
+
+        targetingText = GameObject.Find("Targeting Text").GetComponent<TextMeshProUGUI>();
     }
 
     private void Update()
@@ -191,6 +196,7 @@ public class GameManager : MonoBehaviour
         {
             colorAssistText.text = EnabledOrDisabled(colorAssistEnabled);
             lowDetailText.text = EnabledOrDisabled(lowDetailEnabled);
+            targetingText.text = EnabledOrDisabled(laserTargetingEnabled);
         }
     }
 

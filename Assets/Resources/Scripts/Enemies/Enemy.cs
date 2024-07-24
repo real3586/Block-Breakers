@@ -90,4 +90,22 @@ public class Enemy : MonoBehaviour
 
         Destroy(gameObject);
     }
+
+    private void OnMouseDown()
+    {
+        if (GameManager.Instance.laserTargetingEnabled)
+        {
+            // if this is not the target, make it
+            if (Laser.Instance.target != gameObject)
+            {
+                Laser.Instance.target = gameObject;
+                TargetingIndicator.Instance.SummonIndicator(gameObject);
+            }
+            // if it is, disengage targeting
+            else
+            {
+                Laser.Instance.target = null;
+            }
+        }
+    }
 }
