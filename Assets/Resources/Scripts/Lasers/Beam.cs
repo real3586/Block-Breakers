@@ -20,7 +20,37 @@ public class Beam : MonoBehaviour
     {
         if (other.CompareTag("Enemy"))
         {
-            other.GetComponent<Enemy>().DealDamage(Mathf.RoundToInt(LaserDamage * DamageMultiplier));
+            Enemy otherEnemy = other.GetComponent<Enemy>();
+            
+            switch (GameManager.Instance.currentLaserEffect)
+            {
+                case Enums.Lasers.Execute:
+                    float a = otherEnemy.health, b = otherEnemy.maxHealth;
+                    if (a / b <= 0.5f || Mathf.Approximately(a / b, 0.5f))
+                    {
+                        otherEnemy.DealDamage(Mathf.RoundToInt(LaserDamage * 1.25f));
+                    }
+                    else
+                    {
+                        otherEnemy.DealDamage(Mathf.RoundToInt(LaserDamage));
+                    }
+                    break;
+
+                case Enums.Lasers.Shatter:
+                    if (otherEnemy.health == otherEnemy.maxHealth)
+                    {
+                        otherEnemy.DealDamage(Mathf.RoundToInt(LaserDamage * 3));
+                    }
+                    else
+                    {
+                        otherEnemy.DealDamage(Mathf.RoundToInt(LaserDamage));
+                    }
+                    break;
+
+                default:            
+                    otherEnemy.DealDamage(Mathf.RoundToInt(LaserDamage * DamageMultiplier));
+                    break;
+            }
         }
     }
 }
