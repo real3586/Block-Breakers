@@ -8,7 +8,7 @@ public class EffectReload : Effect
     {
         yield return StartCoroutine(base.DeathEffect());
 
-        Laser.Instance.LaserRounds = 30;
+        Laser.Instance.LaserRounds = Laser.Instance.LaserMaxRounds;
         Destroy(gameObject);
         yield return null;
     }

@@ -10,11 +10,12 @@ public class ReloadBar : MonoBehaviour
     private void Start()
     {
         slider.minValue = 0;
-        slider.maxValue = Laser.Instance.LaserMaxRounds;
     }
 
     void Update()
-    {
+    {        
+        slider.maxValue = Laser.Instance.LaserMaxRounds;
+
         slider.value = Laser.Instance.LaserRounds;
     }
 }

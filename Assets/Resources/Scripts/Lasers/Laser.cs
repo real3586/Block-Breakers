@@ -13,7 +13,7 @@ public abstract class Laser : MonoBehaviour
     [SerializeField] protected float rotationSpeed = 250;
     [SerializeField] protected float laserDelay = 0.15f;
     [SerializeField] protected float laserReloadDelay = 1f;
-    public int LaserMaxRounds { get; private set; } = 30;
+    public int LaserMaxRounds { get; protected set; } = 30;
     public int LaserRounds { get; set; }
 
     protected Quaternion initialRotation, continuousRotation;
@@ -26,7 +26,7 @@ public abstract class Laser : MonoBehaviour
 
     protected abstract void Awake();
 
-    void Start()
+    protected virtual void Start()
     {
         rotationSpeed = baseRotation;
         laserDelay = baseDelay;
@@ -45,7 +45,7 @@ public abstract class Laser : MonoBehaviour
         StartCoroutine(LaserCoroutine());
     }
 
-    protected virtual void Update()
+    protected void Update()
     {
         // continuous rotation for the cool effect
         continuousRotation *= Quaternion.Euler(0, 0, rotationSpeed * Time.deltaTime);
@@ -58,6 +58,7 @@ public abstract class Laser : MonoBehaviour
             // if the laser is active, don't move or rotate
             if (!laserBeam.activeSelf)
             {
+                // prioritize the target
                 if (GameManager.Instance.laserTargetingEnabled && target != null)
                 {
                     // Get the direction to the enemy
