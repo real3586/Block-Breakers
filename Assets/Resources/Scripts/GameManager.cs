@@ -181,12 +181,13 @@ public class GameManager : MonoBehaviour
             {
                 SceneManager.LoadScene("LoseScreen");
             }
-            healthText.text = PlayerHealth.ToString();
-            scoreText.text = PlayerScore.ToString();
 
             detailMultiplier = lowDetailEnabled ? 0.5f : 1;
             currentGameTime = Time.time - gameStartTime;
-            currentEra = SetCurrentEra(gameStartTime);
+            currentEra = SetCurrentEra(currentGameTime);            
+            
+            healthText.text = PlayerHealth.ToString();
+            scoreText.text = PlayerScore.ToString();
 
             if (GameObject.Find("EnemyGeneral(Clone)"))
             {
