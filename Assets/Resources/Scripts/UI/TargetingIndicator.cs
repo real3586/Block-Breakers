@@ -21,7 +21,7 @@ public class TargetingIndicator : MonoBehaviour
         transform.position = enemy.transform.position;
 
         // scale up the indicator based on the size of the enemy
-        targetingIndicator.fontSize = 28 / 3 * enemy.transform.localScale.x + 2.4f;
+        targetingIndicator.fontSize = ReturnFontSize(enemy.transform.localScale.x);
 
         StartCoroutine(FlashSequence());
     }
@@ -43,6 +43,12 @@ public class TargetingIndicator : MonoBehaviour
 
     private void Update()
     {
+        if (GameManager.Instance.laserTargetingEnabled)
+        {
+            targetingIndicator.gameObject.SetActive(false);
+            return;
+        }
+
         if (Laser.Instance.target == null)
         {
             targetingIndicator.gameObject.SetActive(false);
@@ -54,6 +60,12 @@ public class TargetingIndicator : MonoBehaviour
                 targetingIndicator.gameObject.SetActive(true);
             }
             transform.position = Laser.Instance.target.transform.position;
+            targetingIndicator.fontSize = ReturnFontSize(Laser.Instance.target.transform.localScale.x);
         }
+    }
+
+    private float ReturnFontSize(float xScale)
+    {
+        return 28 / 3 * xScale + 2.4f;
     }
 }

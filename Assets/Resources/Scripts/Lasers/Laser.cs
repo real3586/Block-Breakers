@@ -45,8 +45,15 @@ public abstract class Laser : MonoBehaviour
         StartCoroutine(LaserCoroutine());
     }
 
-    protected void Update()
+    protected virtual void Update()
     {
+        // for targeting
+        // if there is a target but targeting is not enabled, just delete the target
+        if (!GameManager.Instance.laserTargetingEnabled)
+        {
+            target = null;
+        }
+
         // continuous rotation for the cool effect
         continuousRotation *= Quaternion.Euler(0, 0, rotationSpeed * Time.deltaTime);
 

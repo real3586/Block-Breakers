@@ -19,6 +19,8 @@ public class GameManager : MonoBehaviour
 
     public Enums.Lasers currentLaserEffect;
 
+    float currentGameTime;
+
     int playerScoreRate, spawnScore, spawnScoreRate;
     public List<GameObject> enemyPrefabs = new();
     List<GameObject> effectPrefabs = new();
@@ -91,6 +93,8 @@ public class GameManager : MonoBehaviour
                 StopAllCoroutines();
                 GameObject.Find("Final Score").GetComponent<TextMeshProUGUI>().text = 
                     "Final Score: " + PlayerScore;
+                GameObject.Find("Time Text").GetComponent<TextMeshProUGUI>().text = 
+                    "Time Survived: " + currentGameTime.ToString("F2") + "s";
 
                 isGameInitialized = false;
                 spawnSequenceCalled = false;
@@ -181,7 +185,8 @@ public class GameManager : MonoBehaviour
             scoreText.text = PlayerScore.ToString();
 
             detailMultiplier = lowDetailEnabled ? 0.5f : 1;
-            currentEra = SetCurrentEra(Time.time - gameStartTime);
+            currentGameTime = Time.time - gameStartTime;
+            currentEra = SetCurrentEra(gameStartTime);
 
             if (GameObject.Find("EnemyGeneral(Clone)"))
             {
@@ -232,7 +237,7 @@ public class GameManager : MonoBehaviour
     {            
         List<Enums.Enemies> readyEnemies = new();
         // if the game has gone on for 5 minutes, only spawn final bosses and generals
-        if (Time.time - gameStartTime >= 300)
+        if (currentGameTime >= 300)
         {
             readyEnemies.Add(Enums.Enemies.FinalBoss);
             readyEnemies.Add(Enums.Enemies.FinalBoss);
@@ -249,7 +254,7 @@ public class GameManager : MonoBehaviour
                 if (spawnScore >= enemyScript.spawnScore)
                 {
                     // then check spawn time
-                    if (Time.time - gameStartTime >= enemyScript.firstSpawnTime)
+                    if (currentGameTime >= enemyScript.firstSpawnTime)
                     {
                         readyEnemies.Add((Enums.Enemies)i);
                         // if it is that enemy's era, add it again
