@@ -4992,7 +4992,7 @@ MonoBehaviour:
   preferedEra: 151
   firstSpawnTime: 145
   speed: 0.3
-  health: 3200
+  health: 3500
   maxHealth: 0
   spawnScore: 150
   defeatScore: 200

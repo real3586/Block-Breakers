@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 
 public class EnemyEvolved : Enemy
 {
-    const float baseSpeed = 0.5f, baseHealth = 750, baseScale = 0.75f;
+    const float baseSpeed = 0.5f, baseHealth = 725, baseScale = 0.75f;
     float evolvedMultiplier;
 
     private void OnEnable()

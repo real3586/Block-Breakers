@@ -38,12 +38,12 @@ public class TargetingIndicator : MonoBehaviour
 
         targetingIndicator.gameObject.SetActive(true);
 
-        coroutineInProgress= false;
+        coroutineInProgress = false;
     }
 
     private void Update()
     {
-        if (GameManager.Instance.laserTargetingEnabled)
+        if (!GameManager.Instance.laserTargetingEnabled)
         {
             targetingIndicator.gameObject.SetActive(false);
             return;

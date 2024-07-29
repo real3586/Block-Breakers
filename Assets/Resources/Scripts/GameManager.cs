@@ -243,7 +243,7 @@ public class GameManager : MonoBehaviour
             readyEnemies.Add(Enums.Enemies.FinalBoss);
             readyEnemies.Add(Enums.Enemies.FinalBoss);
             readyEnemies.Add(Enums.Enemies.FinalBoss);
-            readyEnemies.Add(Enums.Enemies.FinalBoss);
+            readyEnemies.Add(Enums.Enemies.Evolved);
             readyEnemies.Add(Enums.Enemies.General);
         }
         else
@@ -361,8 +361,8 @@ public class GameManager : MonoBehaviour
 
         // assign the direction angle for the enemies to take
         // in Unity the degrees are a compass, 0 degrees is North, and rotation follows clockwise
-        // for the variable ignore the outer 20 degrees and the center 70 degrees
-        float angle = Rand.Range(1, 3) == 1 ? Rand.Range(110.0f, 145.0f) : Rand.Range(215.0f, 250.0f);
+        // for the variable ignore the outer 20 degrees and the center 80 degrees
+        float angle = Rand.Range(1, 3) == 1 ? Rand.Range(110.0f, 140.0f) : Rand.Range(220.0f, 250.0f);
 
         GameObject newEnemy = Instantiate(enemyPrefabs[(int)enemyType]);
         newEnemy.transform.position = spawnPos;
