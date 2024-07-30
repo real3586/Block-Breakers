@@ -151,10 +151,10 @@ MonoBehaviour:
   preferedEra: 151
   firstSpawnTime: 125
   speed: 0.5
-  health: 725
+  health: 700
   maxHealth: 0
-  spawnScore: 90
-  defeatScore: 120
+  spawnScore: 105
+  defeatScore: 130
   deathEffect: {fileID: 5061526307927675931}
 --- !u!1 &5061526307927675931
 GameObject:

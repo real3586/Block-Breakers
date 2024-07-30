@@ -233,14 +233,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   type: 8
   preferedEra: 150
-  firstSpawnTime: 120
-  speed: 0.8
+  firstSpawnTime: 125
+  speed: 0.75
   health: 800
   maxHealth: 0
   spawnScore: 90
   defeatScore: 110
   deathEffect: {fileID: 8387853488168306099}
-  afterSpeed: 1.1
+  afterSpeed: 1
   shield: {fileID: 1197865817839382085}
   damageReduction: 4
 --- !u!1 &8387853488168306099

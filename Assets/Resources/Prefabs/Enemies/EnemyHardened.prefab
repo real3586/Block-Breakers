@@ -150,7 +150,7 @@ MonoBehaviour:
   type: 7
   preferedEra: 150
   firstSpawnTime: 90
-  speed: 0.9
+  speed: 0.8
   health: 450
   maxHealth: 0
   spawnScore: 60
